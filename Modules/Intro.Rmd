@@ -33,7 +33,16 @@ R output will be preceded by double hash marks and look like this:
 print('This is R output.')
 ```
 
-# R is case sensitive  
+Comments can be added to R code with a hash. Your code should be liberally 
+commented. R will ignore anything in a comment. Comments can also be added to 
+the end of code lines.  
+
+```{r}
+# This is a comment
+x <- 5 # This assigns the number 5 to x.
+```
+
+## R is case sensitive  
 Function names, object names, etc. are all case senstive in R. This means that 
 the function mean() $\neq$ Mean() $\neq$ MEAN() and data $\neq$ Data $\neq$ DATA.
 ```{r}
@@ -43,6 +52,28 @@ a
 A
 identical(a, A)
 ```
+
+## Quotation Marks
+Character strings can be put in quotation marks as ' or ", but they must be 
+closed the same way. ' can be used if the string contains " and vice versa " 
+can be used in the string contains '. Otherwise it is user preference. 
+
+```{r}
+print('Hello')
+print("Hello")
+
+```
+
+```{r}
+print('This gives an error")
+```
+
+
+```{r}
+print("Don't use single if there's an apostorphe")
+print('and "vice versa"')
+```
+
 
 # File Paths  
 A file path specifies the unique location of a file. For example the file path 
@@ -80,9 +111,11 @@ and set with
 setwd('path_to_new_directory')
 ```
 
-# Functions  
+# R Basics
+
+## Functions  
 Function calls are the fundamental building blocks of R. A rigorous treatment of
-function calls is beyond the scope of this book but for further reading, 
+function calls is beyond the scope of this course but for further reading, 
 we recommend 
 [Hadley Wickham's Advanced R: Functions](http://adv-r.had.co.nz/Functions.html). 
 Everything that is done in R is done with a function. Functions take the form
@@ -94,20 +127,53 @@ getwd()
 
 Functions always have parenthesis, objects do not.
 
-# Objects  
-Objects are assigned with '<-' or '->'. The arrow points to the object name. 
+## Objects  
+Objects are assigned with the assigment operator '<-' or '->'. The arrow points
+to the object name. 
 Attempting to call an object that has not been assigned will generate an error 
-message. 
+message. (User defined functions are also created using the assignment operator 
+but that is beyond the scope of this course) 
 
 ```{r}
 Y <- 5
 Y
-27 <- Z
+27 -> Z
 Z
 X
 ```
 
+## Inline Operators  
+R contains the following built-in inline operators that can be used as is:
+^, *, /, +, -, >, >=, <, <=, ==, !=, !, &, &&, |, ||, ~, <-, <<-, :, ::, :::, 
+$, @.  
+For example:
+```{r}
+1 + 3
+2 * 6
+x <- 4 + 8
+x
+3*4 == 6*2
+13 <= 1
+1 <= 13
+5*2 == 10 & 3*4 <= 6
+5*2 == 10 | 3*4 <= 6
+```
 
+## Installing Packages and Loading Packages
+One of the features of R is the ability for users to create packages. Some 
+packages come loaded with the base install of R. Others must be installed.
+To install a package not included with base R, run 
+install.package('package_name')
+```{r, eval = F}
+install.packages('ggplot2')
+```
 
-
+To load a previously installed package or a package that was installed with base
+R for use in the current R session library(package_name). For install.packages()
+the package name must be in quotations, for library() either is fine.
+```{r, eval = F}
+library(ggplot2)
+# or
+library('ggplot2')
+```
 
