@@ -1,0 +1,113 @@
+---
+title: "Intro to R/R Studio"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+# Installing R and Rstudio
+R can be installed from [here](https://cran.r-project.org). Download the base
+version
+for your operating system.  
+RStudio can be installed from 
+[here](https://www.rstudio.com/products/rstudio/download/#download). Download
+the
+installer for your platform.  
+
+**R must be installed before installing RStudio**  
+
+# R code and R output  
+Throughout this course you will be presented with R code and R output. 
+R code will be in boxes like this:
+```{r, eval=FALSE}
+print('This is some R code.')
+```
+
+This can be copied and pasted as is into your R script or R console. 
+
+R output will be preceded by double hash marks and look like this:
+```{r, echo=F}
+print('This is R output.')
+```
+
+# R is case sensitive  
+Function names, object names, etc. are all case senstive in R. This means that 
+the function mean() $\neq$ Mean() $\neq$ MEAN() and data $\neq$ Data $\neq$ DATA.
+```{r}
+a <- 1
+A <- 5
+a
+A
+identical(a, A)
+```
+
+# File Paths  
+A file path specifies the unique location of a file. For example the file path 
+for this file is '/Users/caroline/Repositories/BIOS6605/Modules/Module_1.html'. 
+R recognizes relative file paths. For example if the current working directory 
+(see below) is '/Users/caroline/Repositories/BIOS6605/', R will allow you to 
+access this file with the relative file path 'Modules/Module_1.html'.  
+
+## Some Handy Shortcuts  
+'~/' always represents a users home folder and '../' takes you back up one
+folder level. '../' can be used in succession to go up multiple folder levels. 
+For example this file's path can be represented as 
+'~/Repositories/BIOS6605/Modules/Module_1.html' (where '/Users/caroline' is 
+replaced with '~') '../' will take you to '/Users/caroline/Repositories/' (one 
+level up from '/Users/caroline/Repositories/BIOS6605/') and '../../' will take you
+to '/Users/caroline/', two levels up.
+
+## Slashes  
+In the windows operating environment R will accept file names with forward 
+slashes or back slashes but file names 
+with back slashes must have double back slashes as the back slash is a special 
+character in R. ie. 'C:/users/caroline' or 'C:\\\\users\\\\caroline'). 
+The mac operating environment always uses a forward slash. 
+
+
+## The Working Directory
+R uses a default working directory - usually the users home folder if you are 
+not using projects and the folder where the project file resides if you are in 
+a project. The location of the working directory can be found with 
+```{r}
+getwd()
+```
+and set with
+```{r, eval = F}
+setwd('path_to_new_directory')
+```
+
+# Functions  
+Function calls are the fundamental building blocks of R. A rigorous treatment of
+function calls is beyond the scope of this book but for further reading, 
+we recommend 
+[Hadley Wickham's Advanced R: Functions](http://adv-r.had.co.nz/Functions.html). 
+Everything that is done in R is done with a function. Functions take the form
+function_name(function_arguments). Some functions have no arguments, for example
+to get the current working directory (covered above):
+```{r}
+getwd()
+```
+
+Functions always have parenthesis, objects do not.
+
+# Objects  
+Objects are assigned with '<-' or '->'. The arrow points to the object name. 
+Attempting to call an object that has not been assigned will generate an error 
+message. 
+
+```{r}
+Y <- 5
+Y
+27 <- Z
+Z
+X
+```
+
+
+
+
+

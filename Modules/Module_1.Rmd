@@ -1,0 +1,65 @@
+---
+title: 'Module 1: Entering Data'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+
+# Data Structures and Types
+The most important types of data structures for our purposes are:  
+* Vectors (1 dimensional)  
+* Matrices (2 dimensional)  
+* Arrays (n dimensional)  
+* Data Frames  
+* Lists  
+
+The first 3 must be homogeneous and the last two may be heterogeneous. What does
+this mean? There are four common types in R: logical, integer, double, and 
+character. The homogeneous data structures must be all of one type. R will coerce
+data into the most flexible type present if more than one type is used. Vectors 
+are usually created with the function 'c()' (c for combine or concatenate). 
+
+For example:
+```{r}
+# a vector with only logical types
+logical_vect <- c(T, F, T, T)
+logical_vect
+typeof(logical_vect)
+is.vector(logical_vect)
+
+# a vector with only integer types
+int_vect <- c(1L, 2L, 3L, 4L)
+is.integer(int_vect)
+typeof(int_vect)
+
+# a mixed vector with logical and integers
+mixed_vect1 <- c(T, 1L, 3L, F)
+mixed_vect1
+typeof(mixed_vect1)
+```
+
+Sidenote: to specify an integer use the suffix capital L. 
+
+```{r}
+int_vect <- c(1L, 2L, 3L, 4L)
+is.integer(int_vect)
+typeof(int_vect)
+
+double_vect <- c(1, 2, 3, 4)
+is.integer(double_vect)
+typeof(double_vect)
+
+# a mixed vector with numbers and characters
+mixed_vect2 <- c(0.1, 3, 'a')
+mixed_vect2
+typeof(mixed_vect2)
+```
+
+For this class, we will mostly be focused on data frames. 
+
+
+
