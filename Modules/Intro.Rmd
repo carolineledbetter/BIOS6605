@@ -125,14 +125,14 @@ to get the current working directory (covered above):
 getwd()
 ```
 
-Functions always have parenthesis, objects do not.
+Functions always have parenthesis, data objects do not.
 
-## Objects  
-Objects are assigned with the assigment operator '<-' or '->'. The arrow points
+## Data Objects  
+Data bjects are assigned with the assigment operator '<-' or '->'. The arrow points
 to the object name. 
 Attempting to call an object that has not been assigned will generate an error 
 message. (User defined functions are also created using the assignment operator 
-but that is beyond the scope of this course) 
+but that is beyond the scope of this course.) 
 
 ```{r}
 Y <- 5
@@ -140,6 +140,18 @@ Y
 27 -> Z
 Z
 X
+```
+
+Objects can  be assigned in succession. Assigment can also be done inside
+expressions. 
+```{r}
+x <- y <- z <- 5
+# assigns 5 to x, y, and z 
+c(x, y, z)
+
+x <- 2*(y <- 5)
+# assigns 5 to y and 2*y = 10 to x
+c(x, y)
 ```
 
 ## Inline Operators  
