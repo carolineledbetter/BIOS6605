@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning  = TRUE)
 knitr::opts_knit$set(root.dir = '../')
 ```
 
@@ -59,7 +59,107 @@ mixed_vect2
 typeof(mixed_vect2)
 ```
 
+Lists and data frames allow for mixed data types. Lists can contain any 
+type of data and lists with in lists do not need to be the same size. 
+Lists are created with the list() function call. 
+```{r}
+list1 <- list('A', 'B', 3L, 3, T)
+str(list1)
+
+list2 <- list(T, F, 5L)
+list_1and2 <- list(list1, list2)
+str(list_1and2)
+```
+In a data frame, the 
+individual variable can only contain one type - ie. character, integer, factor, 
+list. However because dataframes can contain lists - different types of data 
+can be put in a list. All variables in a data frame must have the same length 
+(the same number of observations). Note: because objects are converted to 
+data frames with 1 variable before being combined if you want to add a list, 
+it must be done seperatly. Data frames are created with the function 
+data frame()
+
+```{r}
+df1 <- data.frame(V1 = c(1L, 2L, 3L), V2 = c(1, 0, 1), 
+                  V3 = c(1L, 1, 2), V4 = c('Male', 'Female', 'Female'), 
+                  V5 = list(list1, list2, list_1and2))
+str(df1)
+df2 <- data.frame(V1 = c(1L, 2L, 3L), V2 = c(1, 0, 1), 
+                  V3 = c(1L, 1, 2), V4 = c('Male', 'Female', 'Female'))
+df2$V5 <- list(list1, list2, list_1and2)
+str(df2)
+```
+Character variables are automatically converted to factors unless 
+stringsAsFactors is set to FALSE. (We get into factors below). 
+
+```{r}
+df3 <- data.frame(Gender = c('Male', 'Female', 'Female', 'Female'), 
+                  Age = c(24, 24, 25, 24))
+str(df3)
+
+df4 <- data.frame(Gender = c('Male', 'Female', 'Female', 'Female'), 
+                  Age = c(24, 24, 25, 24), stringsAsFactors = F)
+str(df4)
+```
+
+Data frames can also be created by specifing object names. 
+```{r}
+Age <- c(25L, 30L, 56L)
+Gender <- c('Male', 'Female', 'Male')
+Weight <- c(160, 110, 220)
+mydata1 <- data.frame(Age, Gender, Weight)
+str(mydata1)
+```
 For this class, we will mostly be focused on data frames. 
 
+## Factors
+A factor is a special type of integer vector. Factor class vectors have a
+special attribute: levels. It is likely that you will use factors extensively in
+your analysis. They are ideal for categorical variables because a large number 
+of statistical methods automatically recognize factors as categorical variables
+and perform any necessary dummy coding behind the scenes. BIOS 6601 will cover 
+cover the need for dummy coding in regression models later in the summer. 
+For our purposes you need to know that factors are a special class of vector 
+used for coding categorical variables. The levels attribute sets the allowed 
+levels (classes/categories). Levels can be set when the factor is created or 
+seperately. The levels of a factor can be accessed with the levels funtion. 
+Examples:
 
+```{r}
+x <- c('A', 'A', 'B', 'C')
+x <- factor(x)
+x
+str(x)
+class(x)
+levels(x)
+# You can add levels 
+levels(x) <- c('A', 'B', 'C', 'D')
+levels(x)
+x
+# note that setting the levels will completely replace the original levels
+levels(x) <- c('Dog', 'Cat', 'Bird', 'Rabbit')
+x # no information about the original levels/ values (A, B , and C) is retained
+str(x)
+# trying to replace the levels with fewer levels will give an error
+# note this is the case even though x does not contain the 4th level
+levels(x) <- c('A', 'B', 'C')
 
+# trying to assign a value that is not in the levels will results in 
+# an assignment of NA and will produce a warning
+x[3] <- 'Monkey'
+x
+str(x)
+
+# levels are ordered - if you change the order - you will change the level
+# assigned to a data point. only the index of the level is preserved
+x <- factor(c('A', 'A', 'B', 'C'))
+x
+levels(x) <- c('C', 'B', 'A')
+x # notice this is now different from above
+```
+There are various methods for reordering levels and combining levels that we will
+address in a later module. 
+
+## Logicals
+Logicals have the special property that FASLE = 0 and TRUE =1. This allows 
+mathmatical operations to be performed. 
