@@ -160,6 +160,68 @@ x # notice this is now different from above
 There are various methods for reordering levels and combining levels that we will
 address in a later module. 
 
+### The Cut Function  
+Categorical variables can be easily created from continous variables using the 
+cut function. The cut function accepts arguments for break points including 
+the starting and ending points. To include all values below a certain value use 
+'-Inf' as the starting point. To include all values above a certain value use 
+'Inf' as the end point. By default categories are closed on the right (meaning 
+it includes the lowest value but not the highest - for example 
+cut(x, breaks = c(-Inf, 10, 20, Inf)) would generate intervals of less than or
+equal to ten, greater than 10 to less than or equal to 20, and greater than 20. 
+If the endpoints are not (-Inf, Inf), values outside of those endpoints will 
+be categorigized as NA. Labels can be assigned using the labels option. You will
+always have one less label than cutpoint. The resulting vector is a factor. 
+
+```{r}
+data("precip")
+# Included dataset that has The average amount of precipitation (rainfall) in 
+# inches for each of 70 United States (and Puerto Rico) cities.
+# for more info see ?precip
+precipcat <- cut(precip, breaks = c(0, 29, 37, 43, Inf), 
+                 labels = c('Very Dry', 'Dry', 'Wet', 'Very Wet'))
+table(precipcat, useNA = 'always')
+precipcat <- cut(precip, breaks = c(0, 29, 37, 43, 65), 
+                 labels = c('Very Dry', 'Dry', 'Wet', 'Very Wet'))
+table(precipcat, useNA = 'always')
+is.factor(precipcat)
+```
+
+### The table and prop.table functions
+The table and prop.table function are very useful in examining categorical 
+variables, making frequency tables and examining proportions. For right now, 
+we will contstrain our discussion to one way and two-way frequencies. Later in 
+the semester we will expand that to three-way frequecies and use these functions
+to perform statisitcal tests. To obtain row, column or overall percentages use
+prop.table with the table object. 
+
+```{r}
+# data frame with Gender and Smoking Status Randomly assigned
+set.seed(123) # we will discuss setting seeds in a later module
+Gender <- sample(c('Female', 'Male'), 50, replace = T)
+set.seed(999)
+Smoker <- sample(c('Smoker', 'NonSmoker'), 50, replace = T)
+df5 <- data.frame(Gender, Smoker)
+# look at Smoking Status by Gender
+table(df5$Gender, df5$Smoker)
+# there are 10 Female Non Smokers, 26 Non Smokers Overall and 
+# 25 females overall
+prop.table(table(df5$Gender, df5$Smoker))
+# 20% of the overall population (50) are Female Non Smokers (10)
+# note the sum of all percentages = 100
+
+# margin = 1 for row percentages
+prop.table(table(df5$Gender, df5$Smoker), margin = 1)
+# 40% of the females overall (25) are non smokers(10)
+# note the sum of both rows = 100
+
+#margin  = 2 for column percentages
+prop.table(table(df5$Gender, df5$Smoker), margin = 2)
+# 38% of non-smokers overall (26) are female (10)
+# note the sum of both columns = 100
+```
+
+
 ## Logicals
 Logicals have the special property that FASLE = 0 and TRUE = 1. This allows 
 mathematical operations to be performed. 
@@ -173,5 +235,58 @@ sum(logical_vect)
 sum(logical_vect)/length(logical_vect)
 ```
 
+# Subsetting
+To access individual elements of a data object use square brackets or the 
+dollar sign (lists and data frames). Examples:
+```{r}
+# for one dimesional vectors
+x <- c(1:10)
+x
+x[4]
+x[5]
+# you can not use $ outside of lists or data frames
+x$5
+```
+
+```{r}
+# for more than one use c()
+x[c(1, 5, 7)]
+# or sequences
+x[1:6]
+
+str(list1)
+list1[1]
+list1[1:3]
+
+# for two dimensional objects - the first number is the row, the second
+# is the column, to get all values in a row or a column use
+# blanks
+x <- matrix(c(1:10), ncol = 5)
+x
+x[1, 4]
+x[, 4]
+x[1, ]
+
+df6 <- data.frame(x = c(1:10), z = letters[1:10], 
+                  stringsAsFactors = F)
+df6
+df6[5:9, 1]
+df6[8, 1:2]
+# specifing indeices outside of the range will return an error
+df6[2, 3:4]
+```
+
+```{r}
+# lists and dataframes can also be subsetted using '$'
+# for lists the list MUST be named (data frames are always named)
+list1$`1`
+names(list1) <- c('1', '2', '3', '4', '5')
+list1
+list1$`1`
+df6$x
+df6$z
+```
+For a more indepth discussion of subsetting we recommend 
+[Advanced R: Subsetting](http://adv-r.had.co.nz/Subsetting.html)
 
 
