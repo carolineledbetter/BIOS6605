@@ -160,7 +160,7 @@ x # notice this is now different from above
 There are various methods for reordering levels and combining levels that we will
 address in a later module. 
 
-### The Cut Function  
+### The cut function  
 Categorical variables can be easily created from continous variables using the 
 cut function. The cut function accepts arguments for break points including 
 the starting and ending points. To include all values below a certain value use 

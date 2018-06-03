@@ -1,0 +1,163 @@
+---
+title: 'Module 1b: Reading and Saving Data'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning  = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+# Intro 
+Most of the time the data you wish to analyze will be in a format other than R. 
+We will go over how to read these other file types into R. For additional 
+file types, we recommend 
+[Quick R: Importing Data](https://www.statmethods.net/input/importingdata.html).  
+
+# read.table
+read.table allows you to read in data that is in a table format from text files. 
+```{r}
+# this code to run you will need to download the effort.txt file from canvas
+# and add it to a folder called data in your working directory
+la_effort <- read.table('Data/effort.txt')
+
+# you can also download data from a URL
+la_data <- read.table("http://data.princeton.edu/wws509/datasets/effort.dat")
+```
+
+We will use the summary and head function to get some details about our new data
+frame. 
+```{r}
+summary(la_effort)
+
+# specifies the first 5 observations
+head(la_effort, 5)
+
+# let's rename the variables so they are more descriptive
+names(la_effort) <- c('Country', 'Setting', 'Effort', 'Change')
+head(la_effort, 3)
+
+```
+
+**Important Concepts:**   
+  1.	Here R has put the country name as the first column. We could instead 
+      specify that these be used as the row names with the option row.names = 1 
+      (for the first column).  
+  2.	The contents in the first column are all unique values.  
+  3.	You can always tell R explicitly whether or not you have a header by 
+      specifying the optional argument header=TRUE or header=FALSE to the read.table 
+      function.  
+  4.	If your file does not have a header line, R will use the default variable
+      names V1, V2, ..., etc. To override these default names use read.table's 
+      optional argument col.names to assign variable names. This argument takes a 
+      vector of names which can pre-exist or be built in the command.   
+
+
+```{r}
+# read in the same data as before but this time - set the 1st column to row
+# names and set the column names when the data is read in
+la_effort <- read.table('Data/effort.txt',
+                        col.names = c('', 'Setting', 'Effort', 'Change'), 
+                        row.names = 1)
+head(la_effort, 6)
+```
+
+# read.csv
+read.csv allows us to conveniently read in csv (comma separated values) files. 
+Many applications produce data in .csv files.
+
+```{r}
+# as above you will need to download the relevant data (cancer_and_smoking.csv)
+# file from canvas and add it to a folder called data in your working directory
+smoking <- read.csv('Data/cancer_and_smoking.csv')
+smoking
+# notice the variable names - by default R assumes header = T which is not 
+# the case here and so the first observation has been used to assign
+# variable names
+# we will fix this by exlicitly stating header = F
+smoking <- read.csv('Data/cancer_and_smoking.csv', header = F)
+smoking
+# we can now set the variable names
+names(smoking) <- c("State", "Cigarette", "Bladder", "Lung", "Kidney", 
+                    "Leukemia")
+smoking
+```
+
+# Merging Data sets
+Two data sets can be merged with the merge function. The 'by' option determines
+how the data is matched up. 'by.x' and 'by.y' can be used if the variable names
+are not identical in both data sets. 'all.x', 'all.y' and 'all' can be used to 
+specify if all observations from the first data frame, all observations from 
+the second data frame or all observations should be used. 
+```{r}
+df1 <- data.frame(ID = c(2, 3, 1, 4, 5), 
+                  hgt = c(70, 67, 64, 66, 72), 
+                  wgt = c(180, 156, 128, 118, 202), 
+                  race  = c('Cauc', 'Af.Am', 'Af.Am', 'Cauc', 'Asian'), 
+                  year = c('Jr', 'Fr', 'Fr', 'Sr', 'So'), 
+                  SAT = c(1080, 1210, 840, 1340, 880))
+df1
+df2 <-  data.frame(ID = c(1, 2, 3, 5, 6), 
+                   sex = c('Male', "Male", "Female", "Male", "Female"), 
+                   age = c(16, 15, 22, 14, 19))
+df2
+
+# default merge
+df3 <- merge(df1, df2, by = 'ID')
+df3
+
+# include all observations
+df4 <- merge(df1, df2, by = 'ID', all = T)
+df4
+
+# include all observations from df1
+df5 <- merge(df1, df2, by = 'ID', all.x = T)
+df5
+
+# include all observations from df2
+df6 <- merge(df1, df2, by = 'ID', all.y = T)
+df6
+
+# rename id in df2 so names don't match
+names(df2) <- c('id', 'sex', 'age')
+df7 <- merge(df1, df2, by.x = 'ID', by.y = 'id', all = T)
+df7
+```
+
+# Ordering Data
+Data can be ordered by a column or columns using the order function. 
+```{r}
+df1
+
+# note that because we are ordering the rows - the order function goes
+# where the row indecies would go and there is a ', ' to specify all 
+# columns
+df1ord <- df1[order(df1$SAT), ]
+df1ord
+# if the ordered object is not saved it will only be ordered printed in the 
+# console - no permentant changes will be made ie.
+df1[order(df1$SAT), ]
+# displays the ordered data frame but does not save it
+
+# the order function returns the indecies of the rows in order
+order(df1$SAT)
+
+# to order from higest to lowest use decreasing = T
+df1[order(df1$SAT, decreasing = T), ]
+```
+
+# Saving Data
+Individual data objects can be saved in files with the file extension .rda. 
+Groups of data objects can be saved in files with the extension .RData.
+
+```{r eval = F}
+# to save an individual R data object, specify the object and the file name
+save(la_effort, file = 'Data/la_effort.rda')
+
+# to save a group of r objects, list them and then the file name
+save(la_effot, la_data, file = 'Data/la_objs.RData')
+
+# to save all objects in the environment
+save.image('AllObjs.Rdata')
+```
+
