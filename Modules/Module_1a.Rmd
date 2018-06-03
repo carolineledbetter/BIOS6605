@@ -244,6 +244,9 @@ x <- c(1:10)
 x
 x[4]
 x[5]
+```
+
+```{r}
 # you can not use $ outside of lists or data frames
 x$5
 ```
