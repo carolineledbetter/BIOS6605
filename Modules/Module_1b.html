@@ -162,9 +162,8 @@ head(la_effort, 3)</code></pre>
 ## 3   Chile      89     16     29</code></pre>
 <p><strong>Important Concepts:</strong><br />
 1. Here R has put the country name as the first column. We could instead specify that these be used as the row names with the option row.names = 1 (for the first column).<br />
-2. The contents in the first column are all unique values.<br />
-3. You can always tell R explicitly whether or not you have a header by specifying the optional argument header=TRUE or header=FALSE to the read.table function.<br />
-4. If your file does not have a header line, R will use the default variable names V1, V2, …, etc. To override these default names use read.table’s optional argument col.names to assign variable names. This argument takes a vector of names which can pre-exist or be built in the command.</p>
+2. You can always tell R explicitly whether or not you have a header by specifying the optional argument header=TRUE or header=FALSE to the read.table function.<br />
+3. If your file does not have a header line, R will use the default variable names V1, V2, …, etc. To override these default names use read.table’s optional argument col.names to assign variable names. This argument takes a vector of names which can pre-exist or be built in the command.</p>
 <pre class="r"><code># read in the same data as before but this time - set the 1st column to row
 # names and set the column names when the data is read in
 la_effort &lt;- read.table('Data/effort.txt',
