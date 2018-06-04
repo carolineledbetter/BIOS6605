@@ -361,7 +361,7 @@ print(WeightSummary &lt;- summaryBy(Weight ~ Gender,
 ## 2   Male   131.6311   219.9481      181.0202</code></pre>
 <div id="the-cumulative-density-function" class="section level2">
 <h2>The cumulative density function</h2>
-<p>For each distribution, r has a function for determining the cumulative probability. For the uniform, binomail, Poisson and normal distributions, the functions are punif(), pbinom(), ppois() and pnorm() respectively. Notice these are the same suffixes as in the random function with r for random replaced with p for probability. Here the argument n is replaced with q and the other required arguments remain the same. Therefore pnorm and punif only require n, pbinom requires size and prob, and ppois requires lambda. Graphically, this is the area under the curve to the left of q.</p>
+<p>For each distribution, r has a function for determining the cumulative probability. For the uniform, binomial, Poisson and normal distributions, the functions are punif(), pbinom(), ppois() and pnorm() respectively. Notice these are the same suffixes as in the random function with r for random replaced with p for probability. Here the argument n is replaced with q and the other required arguments remain the same. Therefore pnorm and punif only require n, pbinom requires size and prob, and ppois requires lambda. Graphically, this is the area under the curve to the left of q.</p>
 <pre class="r"><code>pnorm(1.96)</code></pre>
 <pre><code>## [1] 0.9750021</code></pre>
 <pre class="r"><code># generate normal distribtion

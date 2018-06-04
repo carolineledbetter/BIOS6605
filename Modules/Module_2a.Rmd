@@ -332,7 +332,7 @@ summaryBy(Weight ~ Gender, data = NormData, FUN = c(min, max, median))
 
 ## The cumulative density function
 For each distribution, r has a function for determining the cumulative 
-probability. For the uniform, binomail, Poisson and normal distributions, the
+probability. For the uniform, binomial, Poisson and normal distributions, the
 functions are punif(), pbinom(), ppois() and pnorm() respectively. Notice these
 are the same suffixes as in the random function with r for random replaced with
 p for probability. Here the argument n is replaced with q and the other required 
