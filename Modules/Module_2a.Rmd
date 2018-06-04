@@ -277,15 +277,16 @@ to have data that reflects a) means of 180 pounds and 140 pounds; and
 b) standard deviations of 15 pounds and 11, for males and females, respectively. 
 
 ```{r}
-FemaleWeights <- rnorm(n = length(Gender == 'Female'), mean = 140, sd = 11)
-# this introduces us to the length function
-# we can use length to find the length of a vector in this case that
-# is the vector where Gender == 'Female'
-length(Gender == 'Female')
+FemaleWeights <- rnorm(n = sum(Gender == 'Female'), mean = 140, sd = 11)
+# remember from module 1a we can use the sum function on a logical to
+# count the number of times something is true
+sum(Gender == 'Female')
 # notice it is the same answer we got from the table above
+```
 
-MaleWeights <- rnorm(n = length(Gender == 'Male'), mean = 180, sd = 15)
 
+```{r}
+MaleWeights <- rnorm(n = sum(Gender == 'Male'), mean = 180, sd = 15)
 # now we set the weights to the correct indeces by gender
 Weight <- ifelse(Gender == 'Female', FemaleWeights, MaleWeights)
 ```
@@ -323,6 +324,8 @@ summaryBy(Weight ~ Gender, data = NormData, FUN = c(mean, sd))
 # we can also save the output as a data object 
 WeightSummary <- summaryBy(Weight ~ Gender, data = NormData, FUN = c(mean, sd))
 WeightSummary
+# This should be close to 140 and 11 for females and 180 and 15 for males
+# and it is!
 ```
 
 ```{r}
@@ -361,7 +364,9 @@ pnorm(1.96)
 set.seed(100)
 normdata <- rnorm(100000)
 hist(normdata, breaks = seq(-4.6, 4.6, .1), 
-     col = c(rep('blue', 66), rep('red', 27)))
+     col = c(rep('blue', 66), rep('red', 27)), 
+     main = 'The Cumulative Density of 1.96', 
+     xlab = NULL)
 abline(v = 1.96)
 ```
 
