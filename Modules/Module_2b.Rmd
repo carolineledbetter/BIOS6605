@@ -1,0 +1,156 @@
+---
+title: 'Module 2b: Random Allocation'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning  = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+# Random Selection
+We can use random number functions in statistical packages to select a random 
+sample from a population or to randomly allocate individuals to various 
+interventions that we might want to compare. Random sampling or selection is an 
+excellent way to reduce bias in an observational study. Random allocation in a 
+clinical trial or comparison study is the optimal way to adjust for 
+possible confounders that we cannot or do not want to measure for each 
+individual in the study.  
+
+**Example: Random Selection Of A Specified Number Of Records From A Larger 
+Finite List**  
+
+In this example, you are conducting a study looking at glucose measurements and
+gender in 10,000 medical records. As part of the quality control checks 
+for the study - the investigators
+have asked you to randomly select 25 records so they can pull the original 
+medical record and review that the numbers are accurate. 
+
+```{r}
+# for this example you will need to download the dummy glucose data set from
+# canvas and place it in a folder named Data in your working directory
+# we will then use the load function to load a previously saved r data object
+load('Data/DummyGlucoseData.rda')
+# this should've loaded a data frame called 
+# gluc_data with 10,000 observations of 3 variables
+head(gluc_data)
+```
+
+We will now use the sample function to select a sample of records. The sample 
+function randomly samples from a finite list with equal probabilities of each
+item being chosen with or without replacement. In this example, we do not want 
+to sample with replacement because we do not want to select the same record 
+more than once. This is equivalent to putting a ball with each record number
+in a bag and then drawing out 25 without putting the ball back in the bag. 
+
+```{r}
+set.seed(222)
+MRN_list <- sample(gluc_data$MRN, size = 25, replace = F)
+# we now have a list of 25 medical record numbers for our investigators
+# lets look at the first 5.
+MRN_list[1:5]
+```
+
+
+```{r, eval = F}
+# we can now export this list to a .csv file to give to the investigators
+write.csv(MRN_list, file = 'Data/MRNsForInvestigators.csv')
+```
+
+We could also select a percentage of records by substituting size in the sample
+function with an expression.
+```{r}
+set.seed(333)
+MRN_list_pct <- sample(gluc_data$MRN, 0.20 * nrow(gluc_data), replace = F)
+# the new function nrow() tells us how many rows are in a data frame
+# we can multiply this by the desired percent, here = 20%
+length(MRN_list_pct)
+```
+
+# Random Allocation
+We will be exploring two ways of allocating subjects into different treatment 
+groups (say A and B) for an intervention trial using:  
+•	**Simple allocation** - the subjects are randomly assigned a course of treatment 
+(either A or B) with no guarantee that they equally distributed among A and B  
+or  
+•	**Block Allocation or Stratified Random Sampling** - the subjects are assigned to 
+group A or B with exactly half (50%) assigned to group A and half assigned to 
+group B.
+
+
+## Simple Random Allocation
+Simple random allocation, or random assignment, is the method of randomly 
+assigning subjects to treatment groups with indifference to how many in each 
+group. Suppose you are comparing the effectiveness of two drugs, Drug A and 
+Drug B, in treating gastro-esophageal reflux disorder (GERD). You decide to 
+test these treatments on the next 100 GERD patients that walk into a clinic.  
+You now have to decide in what order to give the two treatments so you don’t 
+inadvertently create biases. The ‘runif()’ function in R can be used to 
+randomly assign patients to one of two treatment groups, A and B provided we 
+desire a simple random sample.
+
+```{r}
+# set up a data frame with subject ids
+Simple <- data.frame(ID = 1:100)
+# set seed for reproducibility
+set.seed(333)
+Simple$TrtGrp <- ifelse(runif(100) <= 0.5, 'A', 'B')
+# lets take a look
+head(Simple, 10)
+table(Simple$TrtGrp)
+# this list can now be given to the researchers for assignment
+```
+
+## Block Allocation and Stratified Random Sampling
+Suppose instead we want to make sure _exactly_ half of our subjects are assigned
+to treatment group A and half to treatment group B. Here we will use the sample
+function (remember that with the sample function each item has an equal 
+probability of being selected). 
+
+```{r}
+# set up a data frame with subject ids
+# we will start with all subjects be set to treatment group 'B'. 
+Block <- data.frame(ID = 1:100, TrtGrp = 'B', stringsAsFactors = F)
+# We will then randomly select exactly half for treatment group 'A'. 
+set.seed(4)
+Block$TrtGrp[sample(1:100, size = 50, replace = F)] <- "A"
+table(Block$TrtGrp)
+head(Block, 10)
+```
+
+Suppose we want to make sure that each group has an equal number of males and
+females. We can set up a data set with fifty males labeled one to fifty and
+fifty females labeled one to fifty. 
+
+```{r}
+Stratified <- data.frame(ID = c(paste0('M', 1:50), paste0('F', 1:50)), 
+                         Stratum = c(rep('Male', times = 50), 
+                                     rep('Female', times = 50)),
+                         TrtGrp = factor('B', levels = c('A', 'B')))
+# randomly select 25 males for 'A'
+set.seed(10)
+Stratified$TrtGrp[sample(1:50, size = 25, replace = F)] <- 'A'
+set.seed(15)
+#randomly select 25 females for 'A'
+Stratified$TrtGrp[sample(51:100, size = 25, replace = F)] <- 'A'
+table(Stratified$TrtGrp, Stratified$Stratum)
+head(Stratified)
+tail(Stratified)
+```
+
+In the above code blocks - what is the purpose of stringsAsFactors = F and
+factor('B', levels = c('A', 'B'))?
+What to do you think would happen if you ran the following code instead?
+
+```{r, eval = F}
+# set up a data frame with subject ids
+# we will start with all subjects be set to treatment group 'B'. 
+Block <- data.frame(ID = 1:100, TrtGrp = 'B')
+# We will then randomly select exactly half for treatment group 'A'. 
+set.seed(4)
+Block$TrtGrp[sample(1:100, size = 50, replace = F)] <- "A"
+```
+
+Run it and find out. Was it what you expected?
+
+Can you figure out what the function paste0() does? If not try '?paste0'. 
