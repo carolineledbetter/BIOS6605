@@ -43,11 +43,14 @@ x <- 5 # This assigns the number 5 to x.
 ```
 
 ## R is case sensitive  
-Function names, object names, etc. are all case senstive in R. This means that 
+Function names, object names, etc. are all case sensitive in R. This means that 
 the function mean() $\neq$ Mean() $\neq$ MEAN() and data $\neq$ Data $\neq$ DATA.
 ```{r}
 a <- 1
 A <- 5
+```
+
+```{r}
 a
 A
 identical(a, A)
@@ -55,8 +58,10 @@ identical(a, A)
 
 ## Quotation Marks
 Character strings can be put in quotation marks as ' or ", but they must be 
-closed the same way. ' can be used if the string contains " and vice versa " 
-can be used in the string contains '. Otherwise it is user preference. 
+closed the same way. If a string contains a quotation mark the opposite style 
+should be used to open and close it. For instance, in strings with an 
+apostrophe (single quotation), double quotation marks should be used to open 
+and close that string. Otherwise it is user preference. 
 
 ```{r}
 print('Hello')
@@ -70,7 +75,7 @@ print('This gives an error")
 
 
 ```{r}
-print("Don't use single if there's an apostorphe")
+print("Don't use single if there's an apostrophe")
 print('and "vice versa"')
 ```
 
@@ -92,7 +97,7 @@ level up from '/Users/caroline/Repositories/BIOS6605/') and '../../' will take y
 to '/Users/caroline/', two levels up.
 
 ## Slashes  
-In the windows operating environment R will accept file names with forward 
+In the windows operating environment - R will accept file names with forward 
 slashes or back slashes but file names 
 with back slashes must have double back slashes as the back slash is a special 
 character in R. ie. 'C:/users/caroline' or 'C:\\\\users\\\\caroline'). 
@@ -100,7 +105,8 @@ The mac operating environment always uses a forward slash.
 
 
 ## The Working Directory
-R uses a default working directory - usually the users home folder if you are 
+R uses a default working directory. This is usually the users home folder if 
+you are 
 not using projects and the folder where the project file resides if you are in 
 a project. The location of the working directory can be found with 
 ```{r}
@@ -128,7 +134,7 @@ getwd()
 Functions always have parenthesis, data objects do not.
 
 ## Data Objects  
-Data bjects are assigned with the assigment operator '<-' or '->'. The arrow points
+Data objects are assigned with the assignment operator '<-' or '->'. The arrow points
 to the object name. 
 Attempting to call an object that has not been assigned will generate an error 
 message. (User defined functions are also created using the assignment operator 
@@ -142,7 +148,7 @@ Z
 X
 ```
 
-Objects can  be assigned in succession. Assigment can also be done inside
+Objects can  be assigned in succession. Assignment can also be done inside
 expressions. 
 ```{r}
 x <- y <- z <- 5
@@ -181,7 +187,8 @@ install.packages('ggplot2')
 ```
 
 To load a previously installed package or a package that was installed with base
-R for use in the current R session library(package_name). For install.packages()
+R for use in the current R session use library(package_name). 
+For install.packages()
 the package name must be in quotations, for library() either is fine.
 ```{r, eval = F}
 library(ggplot2)
