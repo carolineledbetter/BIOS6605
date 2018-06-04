@@ -146,7 +146,7 @@ x
 ```
 
 ```{r, eval = F}
-# for more information on the uniform distribution and its associated functions
+# for more information on the binomial distribution and its associated functions
 # in R
 ?Binomial
 ```
@@ -177,6 +177,12 @@ summary(p)
 Notice that the mean of Poisson distribution is about 7, as is the variance 
 ( = stddev^2^).  Does the output from the summary function confirm this 
 theoretical result?
+
+```{r, eval = F}
+# for more information on the Poisson distribution and its associated functions
+# in R
+?Poisson
+```
 
 ## The Normal Distribution
 The normal distribution is a continuous probability distribution and is commonly
@@ -217,6 +223,12 @@ sd(normdist)
 hist(normdist, breaks = seq(-3.5, 3.5, 0.1), col = 'green', 
      main = paste0('Histogram of Randomly Generated 1,000 numbers from \n ',  
                    'the Normal Distribution'))
+```
+
+```{r, eval = F}
+# for more information on the normal distribution and its associated functions
+# in R
+?Normal
 ```
 
 # Generating Stimulated Data
