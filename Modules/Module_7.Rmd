@@ -1,0 +1,274 @@
+---
+title: 'Module 7: Power and Sample Size'
+output: html_document
+---
+
+Accept is in quotes because we can never truly accept the hypotheses. We can 
+either reject or fail to reject. We can show evidence in support of either of 
+those but never truly prove it. If you have more questions please look at: 
+[Lies and Stats](https://liesandstats.wordpress.com/2008/09/08/accept-the-null-hypothesis-or-fail-to-reject-it/
+)
+
+# Decisions ERRORS
+When performing a statistical test, we summarize the results in a study in a way 
+so that we can make a decision regarding the validity of a hypothesis, the null 
+hypothesis, with respect to the possible validity of alternative hypotheses. 
+Based on the information we get from our study, we will either: (a) reject the 
+null hypothesis in favor of the alternative; or (b) fail to reject the null 
+hypothesis. As a scientist, you will always have reasonable doubt regarding the
+validity of your decision, since statistical matters are not like mathematical 
+theorems with indisputable proofs, no matter which decision you make (after all
+statisticians are only human.) Now since we are willing to accept that we can 
+make errors, our challenge is to control and quantify the margin of errors in 
+our statistical decision making, based on the data at hand. Since we must make a
+decision based on the results of our study (we do have this responsibility since
+we were given big money to stick our necks out), there are four possible 
+outcomes for every statistical decision we make.
+
+**These are**
+
+      1.	We fail to reject the null hypothesis when the null hypothesis is true –
+           an excellent decision!
+      2.	We reject the null hypothesis (“accept” the alternative hypothesis) when
+           it is false – another excellent decision!
+      3.	We may fail to reject the null hypothesis, when in fact the null 
+           hypothesis is false – not good, we make an error!??!!?!  or 
+      4.	We can reject the null hypothesis even though it is true - another bad 
+           outcome or error!?!?!?
+    
+In summary we have these four possibilities:
+
+|             | Reject Ho        | Fail to reject Ho |   |   |
+|-------------|------------------|-------------------|---|---|
+| Ho is true  | Type I error     | Correct decision  |   |   |
+| Ho is false | Correct decision | Type II error     |   |   |
+|             |                  |                   |   |   |
+
+Since we are statisticians, we are responsible for quantifying the level of 
+certainty (uncertainty or probability) of making either a Type I or Type II 
+error. So our goal, in the Scientific Method processes is select or construct 
+the best study design (i.e., one that uses the least number of study subjects, 
+lower cost and actually doable), that achieves acceptable small chances of 
+making both types of incorrect decisions. We must always recognize the 
+possibility of making an incorrect decision, but also be comforted that we have 
+taken appropriate steps to minimize the possibility of making one. The challenge
+for researchers is that we cannot independently minimize the chance of making 
+these two types of incorrect decisions. That is if we push one too far in one 
+direction, then we increase the chance of making an error in the other 
+direction. Consequently, we must compromise and accept the low or compromised 
+probabilities of making either type of incorrect decisions with a reasonable 
+number of study subjects (which drives feasibility and resources) and reasonable
+study costs.
+
+# Type I Error 
+Since we cannot simultaneously minimize chances of making one type error without
+increasing the likelihood of making the other type of error, one compromise that
+the research community has come to agree with, is that we a-priori set the 
+probability of making a Type I error. For example, we arbitrarily but 
+purposefully select an alpha, a small value between 0 and 1 to represent the 
+probability of a Type 1 error, that is:
+
+    Pr (type I error) = Pr ( reject Ho if Ho were true) = α    (0< α < 1.0)
+    
+This should be intuitive if we think about what alpha means. We should set our 
+alpha level  (often α = .05) prior to designing the study, as this helps us 
+determine how many subjects should participate to reach a high level of 
+confidence of not making an erroneous decision. If alpha equals 0.05, then we 
+say we are conducting a test of hypothesis at a 95% (1- α) level of confidence.
+Therefore, if α = .05 and we reject the null hypothesis for the alternative 
+hypotheses, then when we summarize our decision by saying - “We are 95% 
+confident that we are not rejecting a true hypotheses”. This statement implies 
+that if we run the same experiment, say 20 times, we would inappropriately 
+reject the null hypothesis only once. Thus, we accept that we have enough 
+evidence to reject the null hypothesis or conclude that the alternative 
+hypothesis is true since the chance we made a type I error is less than 5%.
+
+# Type II Error
+The second type of error we need to worry about is the case when we fail to 
+reject Ho, (i.e., we “accept” the null hypothesis) even though it is false. 
+This incorrect decision implies we  “did not have enough power” to identify the
+value or size of the correct alternative. What that means is that even though 
+there is a difference between the null hypothesis and the alternative 
+hypothesis, our study design with the current set of outcomes could not provide 
+sufficient evidence to infer that there is real (significant) difference. This 
+incorrect decision typically occurs when we have too few subjects (i.e., small 
+sample size). We designate the chance or probability of making a type II error 
+by beta, namely:		
+
+    Pr(type II error) = Pr (“accepting” the false null hypothesis) = β.
+
+Consequently, when we know β, we then say our study has (1- β )x100% power. 
+Calculating power is sometimes intense, and requires knowing a number of 
+different formulas. We will not go into any more detail in this lab, however, 
+as you might suspect, there are many different computing programs available to 
+do these calculations for you. 
+
+
+#Power and Sample Size
+
+Power varies with many of our study design assumptions. That is: 
+
+    •	Power increases if we increase alpha, if we choose to use more study 
+    subjects or if we increase our selected effect size; 
+    •	However, power decreases if the population variability increases due to 
+    prior knowledge/estimates, better quantification or conservative choices for
+    describing the population’s natural variability. 
+
+When we are designing a study, we would usually only consider changing alpha 
+(what significance level shall we use?) and changing the sample size (how many 
+people we can accrue for our study?). The variability in the population (or 
+alternatively its standard deviation) is not something we should change without 
+sufficient justification or rationale. The effect size, which represents the 
+difference between the observed value of the hypothesized population parameter 
+and the proposed hypothesis value (from the null hypothesis), is not something
+we manipulate without adequate discussions and rationale with the primary study
+investigator.  
+
+You have already learned that most studies select an alpha level of .05, but you
+may go higher or lower depending on how certain you want to be that you might
+make an incorrect decision. We should select the value for alpha that 
+appropriately meets our study goals and allows us to complete the study - not
+one that maximizes the power.
+
+Considering the above comments, the best course of action is to consider 
+increasing the number of subjects in the study (sample size) to raise our power.
+When designing a study, we want to have enough power to be confident we are 
+unlikely to make a type two error. On the other hand we should be frugal so that
+we are efficient (not exposing an unnecessary number of subjects to possibly 
+adverse conditions; conducting a too costly study; or possibly rendering a study
+not doable because of lack of sufficient accrual). Calculating power ahead of 
+time allows us to know the minimum number of subjects we need to recruit into 
+our study, to achieve a certain level of confidence, power and effect size for a
+given population under study.
+
+# Calculating power
+Based on the formulas for power, effect size, alpha, and sample size are 
+positively correlated with power. As the effect size, alpha, and the sample size
+increase, so does power. Variation is negatively correlated with power. That is,
+as variation increases, our value of power decreases.  
+
+There is one additional decision we have to make before power calculations can 
+move forward.  This decision relates to how we state the Alternative Hypothesis.
+In this testing environment, we reject the Null hypothesis in favor of the 
+Alternative or we “accept” the Null since the evidence in the study does not 
+support the Alternative. Under this framework, it is very important how we state
+the alternative hypothesis. The options are we provide a one-sided or two-sided 
+alternative hypothesis which effects choosing the Critical Value to which we 
+compare out test-statistic; thus impacting our decision. Whether we choose a 
+one- or two-sided test relates to our purpose for the study. If we are only 
+concerned about the true population parameter, about which we are concerned, 
+being specifically larger or specifically smaller than the hypothesized value, 
+then we might do a one-sided test of significance. However, if we are 
+indifferent to whether the difference is larger or small, then we want to be 
+protected in both directions of uncertainty and so we execute a two-sided test. 
+That is, we will decide to reject the null hypothesis if our evidence infers 
+either the true value is much larger or much smaller than the hypothesized value
+in the statement of the null hypothesis. 
+
+The impact is subtle, but very important. If we conduct a one-sided test of a 
+hypothesis, at an alpha level of significance, we determine the critical value 
+for making the decision based on the actual value of alpha, for example: 
+
+    z(α), -z(α),  t(α; n-1), –t(α; n-1), f(α; n1-1, n2-1),  –f(α; n1-1, n2-1) 
+
+On the other hand, in a two sided test of significance, we determine the 
+critical value for making the decision based on the value of “α/2”, for example:
+z(α/2) or -z(α/2);  t(α/2; n-1) or –t(α/2; n-1);  f(α/2; n1-1, n2-1)or   
+–f(α/2; n1-1, n2-1),  … That is, the critical value for a one-sided, α=.05 test 
+of significance, will be equal to one of two critical values for an α = .10 two 
+sided test of significance.
+
+
+#Maximizing Power of Study Design
+As noted above, power calculations should be an intrinsic part of the study 
+design. We should calculate power BEFORE we do the study, and then plan how many
+subjects we will need. If we have insufficient power, the most common approach
+is to try to increase the number of subjects in our study design. We can also 
+consider defining a reasonable effect size and selecting a more homogenous 
+population (decrease variance). However, we must be careful when defining those 
+two parameters, as they are not as easily changed as sample size (and we must 
+justify their changes). 
+
+# pwr() for Calculating Power
+The equations for calculating power vary by the statistical test we perform, 
+but the relationship between the parameters remains the same. We must first 
+choose the statistical test, and then we can calculate power. 
+
+There are many commercial (most are expensive!) and free software programs 
+available to calculate power, as well as many web programs. There are a number
+of functions and libraries to calculate power in R, but we will use the pwr 
+package in this lab. We have already learned that power is a function of effect 
+size, sample size, variation, and level of significance. To use this package we 
+must specify a name for the test done, a sample size, an effect size, a 
+significance level, and variance measure. The type of test that you want to use 
+dictates the function that you use within the pwr package. Here are the 
+different functions and the arguments that they take.  
+
+NOTE: In all examples below n= sample size, sig.level= alpha or significance 
+level, and power= power (0-1).
+
+| Function       | Test                           | Function arguments                                                                                                                                                                                                                                                                                                                                                    |
+|----------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| pwr.2p.test    | Two proportions (equal n)      | pwr.2p.test(h=, n= , sig.level= , power= ),<br>h=effect size, can specifyalternative= “two.sided”,<br> “greater” or “less”,if nothing is specified“two.sided” <br>is the default                                                                                                                                                                                      |
+| pwr.2p2n.test  | Two proportions (unequal n)    | pwr.2p2n.test(h= , n1= , n2= , sig.level= , power),<br>h=effect size, can specify alternative= “two.sided”,<br> “greater” or “less”, if nothing is specified “two.sided” <br>is the default                                                                                                                                                                           |
+| pwr.anova.test | Balanced one way ANOVA         | pwr.anova.test(k= , n= , f= , sig.level= , power= ),<br>k= # of groups, f= effect size                                                                                                                                                                                                                                                                                |
+| pwr.chisq.test | Chi-square test                | pwr.chisq.test(w= , N= , df= , sig.level= , power= ),<br>w=effect size, df=degrees of freedom                                                                                                                                                                                                                                                                         |
+| pwr.f2.test    | General linear model           | pwr.f2.test(u= , v= , f2= , sig.level= , power= ),<br>f2= effect size, u= numerator degrees of freedom, v= <br>denominator degrees of freedom                                                                                                                                                                                                                         |
+| pwr.p.test     | Proportion (one sample)        | pwr.2p.test(h= , n= , sig.level= , power= ),<br>h=effect size, can specify alternative= “two.sided”,<br> “greater” or “less”, if nothing is specified “two.sided” <br>is the default                                                                                                                                                                                  |
+| pwr.r.test     | Correlation                    | pwr.r.test(n= , r= , sig.level= , power= ),<br>r is the population correlation coefficient                                                                                                                                                                                                                                                                            |
+| pwr.t.test     | t-tests                        | pwr.t.test(n= , d= , sig.level= , power = , type=“two.sample”, “one.sample”, “paired”, alternative= “two.sided”),<br>d = effect size (mean/sd), must choose of the type options depending on your test, alternative= “two.sided”,<br> “greater” or “less”, if nothing is specified “two.sided” <br>is the default, type= “two.sample”,<br> “one.sample”, and “paired” |
+| pwr.t2n.test   | t-test(two samples, unequal n) | pwr.t2n.test(n1= , n2= , d= , sig.level= , power= ),<br>n1 and n2 are the sample sizes of the two groups, d= effect size alternative= “two.sided”,<br> “greater” or “less”, if nothing is specified “two.sided” <br>is the default                                                                                                                                    |
+Table information above has been modified from:
+[here]( http://www.statmethods.net/stats/power.html)
+
+#Example 1: 
+Here is an example computing power for a one-sample t-test, where the 
+hypothesized mean is equal to 8, the population standard deviation is 40, a 
+chosen sample size is 150, d = effect size= 8/150, and the desired significance
+level is 0.05. 
+```{r}
+#install.packages('pwr')
+library(pwr)
+pwr.t.test(n=150, d=(8/40), sig.level =0.05, type=c("one.sample"))
+```
+
+Notice that we have specified all the values except power, which we have left 
+out of the function option list. If you don’t specify the “type”, the default 
+
+The R Output tells us that if we design a study like the one specified above, 
+our power will be 0.68, or 68%. That tells us that we have a 0.32 probability of
+making a type II error (that’s pretty high and probably not acceptable.  What 
+are some options?). 
+
+# Example 2: 
+Alternatively, we can ask R to tell us how many people we need in the study to
+have a power of 90%.  In this case, we specify the desired power and leave out 
+the sample size value option. 
+```{r}
+pwr.t.test(power=0.9, d=(8/40), sig.level =0.05, type=c("one.sample"))
+```
+
+This tells us that we need 265 people to achieve a power of 90% or to have a 
+probability of only 0.10 (1.0 – power) of making a type II error. 
+
+# Example 3:
+The situation might occur where we can’t increase our sample size (perhaps a 
+rare disease). We may wish to know what is the largest effect size we could 
+observe in a study of this kind, which would not lead us to reject the Null 
+hypothesis. Using the values from example 1 and 2, namely: 90% power, 
+sample size = 150, st. dev.=40 and type=1-sided.  
+Solution is:
+```{r}
+pwr.t.test(n=150, power=0.9, sig.level =0.05, type=c("one.sample"))
+```
+
+This is telling us that if we only have 150 people in the study, and we wish to
+have a power of 90%, we will only reject the Null hypothesis or “accept” the
+Alternative if the sample mean of the study exceeds 10.68 (i.e. 0.267 = mean /40
+or mean=0.267 x 40). 
+
+A second interpretation of this result is, “We will only reject the null for the
+alternative hypothesis, if we observe more than a 33.5% difference in the sample
+mean for the hypothesized value of 8 (%change = ((obs – exp) / exp)x100 or 
+%change= ((10.68 – 8)/8 x100) = 33.8%).
+
