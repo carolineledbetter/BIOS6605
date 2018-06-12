@@ -1,0 +1,135 @@
+---
+title: 'Module 3: Confidence Intervals'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning  = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+# Z scores (standard scores)
+Recall that we can standardize values to a normal distribtion with mean = 0 and 
+standard deviation = 1 by converting all of the values to z scores using the 
+formula 
+$$z = \frac{x - \mu}{\sigma}$$ 
+where $\mu$ is the population mean and $\sigma$ is the population mean.  
+In most 
+cases the population mean and the population standard deviation are unknown and 
+the sample mean and standard deviation are used. 
+$$z = \frac{x - \bar{x}}{s}$$
+R can quickly scale a variable for us using this formula.
+```{r zscore}
+age <- c(54, 45, 47, 40, 39, 53, 54, 51, 59, 71)
+mean(age)
+sd(age)
+ageScaled <- (age - mean(age))/sd(age)
+mean(ageScaled)
+sd(ageScaled)
+```
+
+The new variable is approximately normally distributed with mean = 0 and 
+standard deviation = 1. 
+
+# Confidence Intervals
+When reporting a parameter estimate, it is typical to include a measure of 
+uncertainty with that point estimate. The preferred solution to this problem 
+is to provide a confidence interval of a predetermined level of confidence, 
+say (1-$\alpha$)%, which represents a range of values that has a specified 
+probability of containing the real value of the parameter being estimated.  
+
+You can use some simple R code to calculate Confidence Intervals (CI). To 
+illustrate this, we are going to use some concepts we learned in Module 2 to 
+generate a data set that involves 10 teachers and their annual salary. 
+
+```{r teach}
+Teacher <- 1:10
+set.seed(123)
+Salary <- rnorm(10, mean = 50500, sd = 18000)
+# run mean and sd to see how close our actual mean and sd are 
+# to those we specified
+TeachData <- data.frame(Teacher, Salary)
+TeachData
+```
+
+All of this code should be familiar to you. If not, please review Modules 1 & 2. 
+
+Now lets find the confidence interval for the mean value of the teachers' salary. 
+Recall that:
+$$(1 - \alpha)\%CI = \bar{x}  \pm Z_{(1-\alpha/2)}\frac{\sigma}{\sqrt n} $$
+To get $Z_{1-\alpha/2}$ we will use the qnorm() function. For the 95% CI, 
+$\alpha = 0.05$. Therefore $1-\alpha/2 = 0.975$
+```{r qnorm}
+qnorm(.975)
+# lets store this for ease of use
+Z_a <- qnorm(.975)
+```
+
+Now we need to get $\bar{x}$ and $Z_{(1-\alpha/2)}\frac{\sigma}{\sqrt n}$. 
+For this section we will use our
+"known" population standard deviation ($\sigma$) of 18,000. 
+
+```{r meansd}
+xbar <- mean(TeachData$Salary)
+SE <- Z_a * (18000/sqrt(10)) # where Z_a is from above and n = 10
+```
+
+Now to put it all together:
+```{r ci}
+LowerCI <- xbar - SE
+LowerCI
+UpperCI <- xbar + SE
+UpperCI
+```
+Thus our 95% confidence interval is (
+$`r format(LowerCI, big.mark = ',', digits = 7, nsmall = 2, trim = T)`, 
+$`r format(UpperCI, big.mark  = ',', digits = 7, nsmall = 2, trim = T)`). 
+
+## T distribution
+Most of the time the population standard deviation is unknown and so we use the 
+sample standard deviation. Then it is appropriate to use the t-distribution. 
+The t-distibtion resembles the normal distribution but has fatter tails. The 
+more degrees of freedom in a t-distribtion, the more closely it resembles the 
+normal.
+
+For more information on the r functions for the t-distribution:
+```{r thelp}
+?TDist
+```
+
+We will use the same formula as above with 2 small changes, we will replace
+$Z_{1-\alpha/2}$ with $t_{(1-\frac{\alpha}{2}, n-1)}$ and $\sigma$ with $s$:
+$$(1-\alpha)\%CI =\bar{x}\pm t_{(1-\frac{\alpha}{2}, n-1)}\frac{s}{\sqrt{n}} $$
+Similar to before:
+
+```{r qt}
+qt(.975, 9) # qt function is the analog of qnorm for the t-distribtion
+t_a <- qt(.975, 9)
+```
+
+
+```{r tsd}
+xbar <- mean(TeachData$Salary)
+SE_t <- t_a * (sd(TeachData$Salary)/sqrt(10))
+```
+
+Now to put it all together:
+```{r tci}
+LowerCI_t <- xbar - SE_t
+LowerCI_t
+UpperCI_t <- xbar + SE_t
+UpperCI_t
+```
+
+Thus our 95% confidence interval is (
+$`r format(LowerCI_t, big.mark = ',', digits = 7, nsmall = 2, trim = T)`, 
+$`r format(UpperCI_t, big.mark  = ',', digits = 7, nsmall = 2, trim = T)`).
+
+We can also use the t.test function to arrive at the same result. The t.test 
+function performs the hypothesis test $H_0: \mu = 0$, but also generates a 
+confidenve interval for $\mu$. 
+
+```{r ttest}
+t.test(TeachData$Salary, conf.level = 0.95)
+```
+
+Confirm this confidence interval is the same as above. 
