@@ -133,3 +133,21 @@ t.test(TeachData$Salary, conf.level = 0.95)
 ```
 
 Confirm this confidence interval is the same as above. 
+
+Now let's say we want to get the mean salary for a subset of the population. 
+For example, say our data now have a column for children. 
+```{r children}
+Children <- c(2, 3, 1, 1, 4, 3, 2, 2, 1, 1)
+TeachData <- data.frame(Teacher, Children, Salary)
+TeachData
+```
+
+Let's find the confidence interval for the mean salary amongst teachers who have
+two children. 
+
+```{r twokiddos}
+t.test(TeachData$Salary[TeachData$Children == 2])
+```
+
+Notice how wide our confidence interval now is. What happens if you do it for
+1 child, how about 4?
