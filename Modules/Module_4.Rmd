@@ -1,0 +1,203 @@
+---
+title: 'Module 4: Data Exploration'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning  = TRUE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+# Data Exploration  
+The primary task before analysis is exploring our data. This allows us to 
+evaulate the appropriateness of statistical procedures, the linearity of 
+relationships and explore how missing data may affect our results. In this 
+module we will discover some of the tools available in R for data exploration.  
+
+## Missingness  
+Missing data points in R are represented by "NA". The function 'is.na()` is an 
+extrememly useful way of idenitfiying missing values. is.na() will return TRUE 
+for missing values and FALSE for non-missing values. 
+
+```{r isna}
+x <- c(2, 4, NA, 10, 11, NA, 3)
+is.na(x)
+# remember that we can select values where a function is equal to true using
+# subsetting
+x[is.na(x)]
+x[!is.na(x)]
+```
+
+**A side note about NAs and subsetting**
+Subsetting with NA will always return NA. For example:
+```{r subsetna}
+x
+# here the equality NA < 5 returns NA so where NA is in x this returns NA
+x[x < 5] 
+```
+
+```{r eval = F}
+# what do you think this will return?
+x < 5
+# run it and find out - were you right?
+```
+
+Some functions functions will return NA if any NAs are present in their 
+arguments. Examples include sum, mean, range, min, max, quantiles. 
+This behaviour can be changed with the argument na.rm = T
+```{r}
+sum(x)
+sum(x, na.rm = T)
+range(x)
+range(x, na.rm = T)
+```
+
+Read the help for any() and think about what you think the following code will 
+return.
+```{r eval = F}
+any(x < 0)
+any(x < 5)
+```
+Now run the code.  Was the result what you expected?  
+
+We can also explore missingness in categorical variables. Add the useNA = 'ifany'
+or useNA = 'always' argument to the table function to display missing values. 
+```{r}
+# to run these examples you will need to download the smokingdata from CANVAS
+# and place it a folder titled data in your working directory
+load('Data/SmokingData.rda')
+table(SmokingData$Gender, SmokingData$Smoker)
+table(SmokingData$Gender, SmokingData$Smoker, useNA = 'ifany')
+table(SmokingData$Gender, SmokingData$Smoker, useNA = 'always')
+```
+
+What do you notice about the missing data?
+
+We can also use addNA() and na.omit() to deal with missing data. By using addNA 
+in our table function we can look at missing data for only one of our variables.
+```{r}
+table(SmokingData$Smoker, SmokingData$Education)
+table(SmokingData$Smoker, SmokingData$Education, useNA = 'ifany')
+table(SmokingData$Smoker, addNA(SmokingData$Education))
+```
+
+addNA() adds a level for missing data to a factor. 
+```{r}
+x <- addNA(SmokingData$Education)
+str(x)
+levels(x)
+head(x, 20)
+```
+
+na.omit() allows us to select only complete cases. This will remove any 
+observations is a data frame where any of the variables is missing. 
+```{r}
+summary(SmokingData)
+completecases <- na.omit(SmokingData)
+summary(completecases)
+```
+
+## Plots
+R has a number of base plotting options and because we use code to create them, 
+they are reproducible and change with the data!
+
+```{r}
+# cars is a built in R data set with speed and dist (it is included with the
+# install - you don't need to do anything to use it) for more info:
+?cars
+```
+
+First just a basic plot of speed v distance
+
+```{r}
+plot(cars)
+```
+
+A nice overview of the data, but let's spice it up a little. 
+```{r}
+plot(cars, 
+     pch = 4, # sets the type of point - here will use a cross
+     col = 'purple', # set the color - 
+     # r will accept a wide variety of colour names as well as hexidecimal 
+     # equivalents
+     main = 'Speed vs Stopping Distance in the Cars data', # set the main title
+     xlab = 'Speed (mph)', # set the x axis title
+     ylab = 'Stopping Distance (ft)' # set the y axis title
+     )
+```
+  
+A complete list of available symbols](https://www.statmethods.net/advgraphs/parameters.html)  
+
+Now, lets add a regression line.  
+
+```{r}
+plot(cars, 
+     pch = 16, # let's the change the point to a filled circle
+     col = '#0000cc', # set the color - 
+     main = 'Speed vs Stopping Distance in the Cars data', # set the main title
+     xlab = 'Speed (mph)', # set the x axis title
+     ylab = 'Stopping Distance (ft)' # set the y axis title
+     )
+abline(lm(dist ~ speed, data = cars))
+```
+
+Now let's look at some other plots using the mtcars data set. 
+```{r}
+summary(mtcars)
+# for details on this data set
+?mtcars
+
+# let's factor cyl, vs, and am. 
+mtcars$cyl <- factor(mtcars$cyl, levels = c(4, 6, 8), 
+                     labels = c('Four Cylinder', 
+                                'Six Cylinder', 
+                                'Eight Cylinder'))
+mtcars$vs <- factor(mtcars$vs, levels = 0:1, 
+                    labels = c('V-shaped', 'straight'))
+mtcars$am <- factor(mtcars$am, levels = 0:1, 
+                    labels = c('automatic', 'manual'))
+summary(mtcars)
+```
+
+R will often guess the type of plot we want based on the data that was passed 
+to it. For example in the plots above R guessed we wanted the first variable
+in cars plotted against the second variable in cars and because they were both
+continuous - it gave us a scatter plot. 
+
+```{r}
+plot(mtcars$cyl)
+plot(mtcars$hp)
+plot(mtcars$hp ~ mtcars$cyl)
+plot(mtcars$cyl ~ mtcars$hp)
+```
+
+Does it appear there is a relationship between horse power and number of 
+cylinders?
+
+```{r}
+plot(mtcars$am ~ mtcars$cyl)
+plot(mtcars$hp ~ mtcars$wt)
+```
+
+Do you think there's an association between transmission type and number of 
+cylinders? How about between horse power and weight?  
+
+Let's look at a histogram of miles per gallon. 
+
+```{r}
+hist(mtcars$mpg, 
+     col = '#33cc33', 
+     main = 'Histogram of Miles per Gallon', 
+     xlab = 'MPG')
+```
+
+Use ?hist, ?plot, and ?par to explore further graphing options. 
+For further study check out [Quick-R: Graphs](https://www.statmethods.net/graphs/index.html)
+and [Quick-R: Advanced Graphs](https://www.statmethods.net/advgraphs/index.html).  
+
+### Saving Graphs
+The easist way to save graphs is to use the export button on the plot viewer 
+in Rstudio. 
+
+
+
