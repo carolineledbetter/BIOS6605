@@ -10,13 +10,13 @@ knitr::opts_knit$set(root.dir = '../')
 
 # Data Exploration  
 The primary task before analysis is exploring our data. This allows us to 
-evaulate the appropriateness of statistical procedures, the linearity of 
+evaluate the appropriateness of statistical procedures, the linearity of 
 relationships and explore how missing data may affect our results. In this 
 module we will discover some of the tools available in R for data exploration.  
 
 ## Missingness  
 Missing data points in R are represented by "NA". The function 'is.na()` is an 
-extrememly useful way of idenitfiying missing values. is.na() will return TRUE 
+extremely useful way of identifying missing values. is.na() will return TRUE 
 for missing values and FALSE for non-missing values. 
 
 ```{r isna}
@@ -126,7 +126,7 @@ plot(cars,
      )
 ```
   
-A complete list of available symbols](https://www.statmethods.net/advgraphs/parameters.html)  
+[For a complete list of available symbols, click here.](https://www.statmethods.net/advgraphs/parameters.html)  
 
 Now, lets add a regression line.  
 
@@ -196,7 +196,7 @@ For further study check out [Quick-R: Graphs](https://www.statmethods.net/graphs
 and [Quick-R: Advanced Graphs](https://www.statmethods.net/advgraphs/index.html).  
 
 ### Saving Graphs
-The easist way to save graphs is to use the export button on the plot viewer 
+The easiest way to save graphs is to use the export button on the plot viewer 
 in Rstudio. 
 
 
