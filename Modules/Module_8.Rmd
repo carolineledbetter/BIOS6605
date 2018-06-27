@@ -1,0 +1,369 @@
+---
+title: 'Module_8: Simple Linear Regression'
+author: "Harry Smith and Caroline Ledbetter"
+date: "6/27/2018"
+output: html_document
+---
+
+**Correlation**
+
+You learned all about correlation coefficients in your Introductory 
+Biostatistics class. The concepts behind assessing correlations underlie those 
+of regression as well, so in this lab we’ll start with correlation and work our
+way through simple linear regression. In R, the cor() function computes Pearson 
+correlation coefficients between two specified variables. Recall that a 
+correlation coefficient ($\rho$, read as “rho”), ranges from -1 to 1, and measures
+the degree to which two variables (y and x) are linearly related 
+(i.e., $y = \beta_0 + \beta_{1x}$). Positive correlation coefficients indicate a direct 
+linear relationship between the variables. Negative correlation coefficients 
+indicate inverse linear relationships, and a zero coefficient indicates no 
+linear relationship. If the correlation coefficient is exactly 1 or -1, the two
+variables have a perfect linear relationship. Correlation estimates differ from 
+linear regression – in linear regression one variable is being predicted by 
+another, where in correlation we are measuring the strength of the linear 
+relationship. The correlation coefficient is a measure of the strength of the
+linear trend relative to the variability of the data around that trend. Thus, 
+it is dependent both on the magnitude of the trend and the magnitude of the 
+variability in the data. There are many correlation coefficients, which are 
+good descriptive statistic for two variables; but the most appropriate one
+depends on whether the variables are continuous, discrete, or ordinal. Here 
+we’re discussing Pearson Correlation for two continuous variables.
+
+**Note:** 
+The correlation coefficient shows deviance from linear relationships. 
+A correlation of 0 does not mean that the two variables are not related, merely
+that they are not linearly related. For example, the equation $y = x^2$ gives 
+$\rho = 0$, but x and y are related through the quadratic equation. Our estimate 
+of  is r and we can estimate it parametrically or non-parametrically
+(using ranks).
+
+**Correlation Function And Syntax**
+
+*  cor(x, use= , method= )
+
+where :
+
+*  x = matrix or data frame
+*  use= specifies how missing data are treated. Options include : all.obs
+(assumes no missing data) ; complete.obs (listwise deletion); 
+pairwise.complete.obs (pairwise deletion)
+*  method= specifies the correlation type (pearson, spearman, or kendall)
+
+The assumptions required for a Pearson correlation coefficient are: 
+
+1.  y and x joint normally distributed (interval or continuous data) 
+2.  independence of  the observations
+
+The assumptions required for the use of the Spearman correlation coefficient 
+are:
+
+1.  ordinal or interval scale data 
+2.  independence of  the observations
+
+**Example 1:**
+This example uses data, which gives the percentage of children immunized against
+DPT and under age 5 mortality rates for 20 countries. The question is whether 
+there is a linear relationship between the percentage of children who have been 
+immunized and the mortality rate for children under 5. It is also good practice 
+to plot the data before doing any analysis. 
+
+```{r}
+#Build dataset for analysis
+country <- c("BOL", "BRZ", "CAN", "CHN", "EGT", "ETH", "FIN", "FRA", "GRE", 
+             "IND", "ITA", "JPN", "MEX", "POL", "SEN", "TRK", "UK", "USA", 
+             "USR", "YGO")
+immun <- c(40, 54, 85, 95, 81, 26, 90, 95, 83, 83, 85, 83,
+           65, 98, 47, 74, 75, 97, 79, 91)
+mortate <- c(165, 85, 9, 43, 94, 226, 7, 9, 12, 145, 11, 
+             6, 51, 18, 189, 90, 10, 12, 35, 27)
+
+## Build dataframe
+dptmort <- data.frame(country, immun, mortate)
+
+## Build plot
+plot(dptmort$immun, 
+     dptmort$mortate, 
+     ylab="MORTATE", 
+     xlab="IMMUN", 
+     ylim=c(0,300), 
+     xlim=c(20, 100))
+```
+
+**Interpretation Of The Plot:**
+Before interpreting the analysis, answer these questions: 
+
+1. Does there seem to be a linear relationship between mortality rate and immunization? 
+2. Is the relationship positive or negative?
+
+**Correlation analysis**
+
+```{r}
+## cor() using Pearson method
+cor(dptmort$immun, dptmort$mortate, method="pearson")
+
+## cor() using Spearman method
+cor(dptmort$immun, dptmort$mortate, method="spearman")
+
+## cor.test() using Pearson method
+cor.test(dptmort$immun, dptmort$mortate, method="pearson")
+```
+
+From the plot, we would conclude that there is a negative relationship, i.e. the
+mortality rate diminishes as the percentage of children immunized increases. The
+cor() function results concur and give a Pearson r = **-0.8290753** and a 
+Spearman r =  **-0.63575473** both of which are negative, indicating a moderate to 
+strong negative linear correlation. The p-value from running cor.test() given
+with confidence interval is testing the null hypothesis Ho:  = 0, i.e. that the
+two variables are not linearly correlated at all. In this example the p-value is
+less than 0.05, thus we would reject the null hypothesis of no correlation 
+(or no linear association). Deciding whether or not the estimated correlation is
+clinically significant is a judgment call and is totally dependent on the 
+situation. In most circumstances, r  > .5 is a good indication of association. 
+(Note: this test is significant for r > .3 for all N > 30)
+
+**Correlation Between All Variables In A Data Set:**
+Sometimes when doing exploratory data analysis one may want to see all 
+correlations between all variables. To do this we can use matcor() function in
+the CCA package. This is a very useful function and can take a data frame as 
+the primary argument. In this example, we are going to use a data set called 
+“mm” that includes information on psychological locust of control and measures 
+of academic standardized testing (for more information see: 
+[here](http://www.ats.ucla.edu/stat/r/dae/canonical.htm)).
+
+```{r, message=FALSE, warning=FALSE}
+## When installing the CCA package it will ask yo if you want to do a compile
+# step. type 'n' for this. 
+#install.packages("CCA")
+suppressMessages(library(CCA))
+## Load data
+mm <- read.csv("https://stats.idre.ucla.edu/stat/data/mmreg.csv")
+
+## Add column names
+colnames(mm) <- c("Control", "Concept", "Motivation", "Read", "Write", "Math", "Science", "Sex")
+
+psych <- mm[, 1:3]  # select the first three variables and all rows.
+acad <- mm[, 4:8]    # select variable 4 to 8 and all rows
+
+## Get all correlations
+matcor(psych, acad)
+```
+
+For this example, you can see a range of correlation values between pairs of 
+variables ranging from large positive to moderately large negative. 
+
+**Introduction to Linear Regression:**
+Linear regression is a method of finding and quantifying linear relationships
+between variables. For example, if you saw the graph below, you would probably
+note that the two variables, under age 5 mortality rate and childhood 
+immunizations seem to be related - as childhood immunizations increase, under 
+age 5 mortality rates decrease. But by how much?  How sure are we about this 
+relationship?  Linear regression, which determines the best fitting line to the 
+data, can answer these questions and more. However, Linear Regression always 
+finds a best linear fit, even when the relationship is not linear, so we always 
+need to confirm or test for a significant fit. 
+
+```{r, echo=FALSE}
+## Build plot
+plot(dptmort$immun, 
+     dptmort$mortate, 
+     ylab="MORTATE", 
+     xlab="IMMUN", 
+     ylim=c(0,300), 
+     xlim=c(20, 100))
+```
+
+Regression analysis is versatile and can be used for many purposes, such as: 
+inference, prediction, and adjustment of covariates. For example, in a 
+randomized trial one may want to control for some of the variables that were
+difficult or impossible to ‘design out’ of the experiment. Cross-sectional and 
+longitudinal studies often use regression methods to make inference since 
+control of confounding is usually not possible in their designs.
+
+**Simple Linear Regression Model:**
+The term simple, in simple linear regression, refers to the fact that there is 
+only one independent variable. Other terms used for “independent variable”, 
+include: covariate, regressor, explanatory variable, risk factor). Our model 
+for simple linear regression is:
+
+  $y = \beta_0 + \beta_{1x}$  or dependent = intercept + slope*independent.
+    
+What sort of data can be used for linear regression? Using the model 
+$y = \beta_0 + \beta_{1x}$, the dependent variable, y, must be continuous and the 
+independent variable, x, can be continuous or categorical. 
+
+**Assumptions For Simple Linear Regression:**
+
+1.	All observations must be independent. This is a study design issue.
+2.	The expected value of the dependent variable $(y)$ is  $E(y) = \beta_0 + \beta_{1x}$ 
+3.	For a given x value the y’s are assumed to be normally distributed with a 
+mean of $y = \beta_0 + \beta_{1x}$, and variance of $\sigma^2$ 
+4.	Variance, $\sigma^2$, is assumed equal for any value of is condition is
+called homoscedasticity. 
+
+**The lm() Function:**
+The lm() function is one of many procedures in R that can be used to compute a 
+least squares regression line. 
+
+**lm() syntax**
+```
+lm(formula, data, subset, weights, na.action, method = "qr", model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL, offset, ...)
+```
+
+| Option          | Description                                                                                                                                                                                                                                                                                                                                                        |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| formula         | an object of class "formula", say y~x, which is a symbolic description of the<br> model to be fitted.                                                                                                                                                                                                                                                              |
+| data            | an optional data frame or list containing the variables in the model. If not found<br> in data, the variables are taken from environment(formula), typically the<br> environment from which lm is called.                                                                                                                                                          |
+| subset          | an optional vector specifying a subset of observations to be used in the fitting<br> process.                                                                                                                                                                                                                                                                      |
+| weights         | an optional vector of weights to be used in the fitting process. Should be NULL<br> or a numeric vector. If non-NULL, weighted least squares is used with weights<br> that minimizing sum(w*e^2); otherwise ordinary least squares is used.                                                                                                                        |
+| na.action       | a function which indicates what should happen when the data contain NAs. The<br> default is set by the na.action setting of options, and is na.fail if that is unset. <br> The ‘factory-fresh’ default is na.omit. Another possible value is NULL, no action.<br> Value na.exclude can be useful.                                                                  |
+| method          | the method to be used; for fitting, currently only method = "qr" is supported;<br> method = "model.frame" returns the model frame (the same as with <br>model = TRUE, see below).                                                                                                                                                                                  |
+| model, x, y, qr | logicals. If TRUE the corresponding components of the fit (the model frame, the<br> model matrix, the response, the QR decomposition) are returned.                                                                                                                                                                                                                |
+| singular.ok     | logical. If FALSE (the default in S but not in R) a singular fit is an error.                                                                                                                                                                                                                                                                                      |
+| contrasts       | an optional list. See the contrasts.arg of model.matrix.default.                                                                                                                                                                                                                                                                                                   |
+| offset          | this can be used to specify an a priori known component to be included in the<br> linear predictor during fitting. This should be NULL or a numeric vector of<br> length equal to the number of cases. One or more offset terms can be included in<br> the formula instead or as well, and if more than one are specified their sum is<br> used. See model.offset. |
+
+**Example Using The lm() Function:**  
+This example uses the data that we looked at on the first page, with child 
+immunizations and under age 5 mortality. We think that as immunizations 
+increase, so under age 5 mortality decreases, and we would like to further 
+quantify this relationship. By looking at the plot ahead of time 
+(always a good first step!) we see that the data look linear, so using linear
+regression seems reasonable. If the data do NOT look linear, a nonlinear 
+function or some nonlinear terms may be needed, such as $x^2$ or $ln(x)$ — but we will
+not be discussing this here. 
+
+```{r}
+## Here we are telling R that we want to run a linear regression model with the 
+# mortate and immune variables.
+model = lm(dptmort$mortate ~ dptmort$immun)
+
+## To get the full output we need to use the summary() function.
+summary(model)
+
+## Build plot
+plot(dptmort$immun, 
+     dptmort$mortate, 
+     ylab="MORTATE", 
+     xlab="IMMUN", 
+     ylim=c(0,300), 
+     xlim=c(20, 100))
+abline(model, col = 'red')
+```
+
+**Interpretation:**  
+The output from lm() function is divided into several different parts:
+
+* The first table of output is the Residuals. 
+* The second table from the output describes the parameter estimates. This table
+lists the estimate for the intercept, $\alpha$ (sometimes called $\beta_0$) 
+and the estimate for the slope of the independent variable,
+$\beta$ (sometimes called $\beta_1$). The parameter
+estimate $\pm t_{0.975,n-2}*(standard error of estimate)$ will give a 95% confidence 
+interval for that parameter. The t-test and associated p-value test the null 
+hypothesis that the parameter estimate is equal to zero. The t-statistic can 
+be calculated by taking the parameter estimate and dividing it by the standard 
+error for that estimate. Since both of the parameters had p values less than
+0.05, we can reject the null hypothesis that they are 0. In other words, these
+are significant terms and should be used in our model.
+* The F-statistic gives a test statistic and p-value associated with a test of 
+the hypothesis that the model explains a significant portion of the variation 
+in the dependent variable. To calculate the F-statistic, divide the mean square
+for the model by the mean square error. Logically, as the mean square error 
+decreases and the model mean square increases, the better the independent 
+variable explains the variability in the dependent variable. In other words, 
+a significant p-value indicates that the model explains a significant proportion
+of the variation in the outcome.
+* The R-squared term equals the model sum of squares divided by the total sum 
+of squares or the Pearson correlation coefficient, r, squared. $R^2$, also known 
+as the coefficient of determination, represents the proportion of variability 
+among observed values of y that is explained by the model. This is a value 
+between 0 and 1 (but it’s not a probability; it’s a proportion). An $R^2$ value 
+closer to 1 is considered good.
+
+The model resulting from this analysis is **mortate = 278.2601  - 2.8317 immun**. 
+Thus, for one increase in immunizations, under age 5 mortality rate will 
+decrease by 2.83 deaths/year. The intercept, 278.26, is the value of under age
+5 mortality rate when **immun = 0**.  This may (may not) make sense; it will depend 
+on the context or biology involved.  
+
+**Note:** this line should not be used to extrapolate, i.e. to predict y based 
+on x values beyond the range of the observed data.
+
+The following plot was created using the abline() function. To print the graph,
+all you need to do is feed this function the variable that you set your 
+model to.
+
+**Confidence and Prediction Intervals:**
+Recall that confidence intervals are statements about computed statistics, i.e.,
+possible or reasonable values for parameters (mean, variance, slope, etc.) we
+are estimating. That is confidence intervals give us a choice of possible
+values, rather than the single best point estimate. When used to estimate the 
+expected value (or mean) of y for a give x in the target population, the 
+Confidence Interval uses the standard error ($\frac{\sigma}{sqrt[n]}$) 
+to determine the range of points that estimate this mean.  
+
+Prediction intervals, on the other hand, provide a range of likely values for 
+the prediction of a single value for y for a given x value. Prediction intervals
+uses the standard deviation ($\sigma$) to determine the range of points that estimate 
+the expected value of y. Which intervals do you think will be wider? 
+
+Below is the printout of the output from using the predict() function. It 
+contains the fitted values and the lower and upper 95% confidence bounds for 
+the expected values, the lower and upper 95% prediction intervals.
+
+```{r}
+## Note, that we have to specify the argument interval=”confidence” to get 
+# the upper and lower confidence intervals.
+predict(model, interval="confidence")
+```
+
+**Plotting The Intervals:**
+
+```{r}
+## To graph the 95% confidence intervals, we are going to use the predict() 
+#  function that we used above and will set it to the variable “a”. 
+a <- predict(model, interval="confidence")
+
+## Before plotting the lines, we need to call our scatterplot again. AS well
+#  as re-fit our regression line.
+plot(dptmort$immun, dptmort$mortate, 
+     ylab="MORTATE", 
+     xlab="IMMUN", 
+     ylim=c(0,300), 
+     xlim=c(20, 100), 
+     main= "Mortality Rate and Immunizations with 95% CI")
+abline(model, lwd=2,col="red")
+
+## Then we are going to use that variable to create to lines to overlay on the 
+#  graph. One for the upper confidence level and one for the lower 
+#  confidence level.
+lines(dptmort$immun, a[,2], lty=2)
+lines(dptmort$immun, a[,3], lty=2)
+```
+
+**Plotting The Predicted And Observed Values:**
+
+```{r}
+## To plot the predicted and observed values we need to install and load the 
+#  lattice package, by using the require() function.
+suppressMessages(library(lattice))
+
+## Then we are going to create a dataset to hold both the observed and fitted
+#  values of mortality. After we have created this dataset, we are going to 
+#  add a column for the values of immunizations. The first 6 rows of the dataset
+#  will be printed so you can confirm what we did.
+res <- stack(data.frame(Observed = dptmort$mortate, 
+                        Predicted = fitted(model)))
+res <- cbind(res, x = rep(dptmort$immun, 2))
+head(res)
+
+## Then, we are going to graph the predicted and observed values together.
+xyplot(values ~ x, 
+       data = res, 
+       group = ind, 
+       auto.key = TRUE, 
+       main="Plot of Predicted and Observed Values", 
+       xlab="IMMUN", 
+       ylab="MORTATE")
+```
+
