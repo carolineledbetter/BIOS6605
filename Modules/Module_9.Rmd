@@ -1,0 +1,482 @@
+---
+title: 'Module_9: Multiple Linear Regression'
+author: "Harry Smith and Caroline Ledbetter"
+date: "6/29/2018"
+output: html_document
+---
+
+**Introduction To Multiple Regression**
+Recall that simple linear regression involves two variables: one independent
+and one dependent variable.  Multiple linear regression is an extension of 
+simple linear regression, which involves one dependent (or response) variable
+and two or more independent (primary factors(s) of interest, confounders, or 
+effect modifiers) variables.
+
+Multiple linear regression analyses can be done in R by the same procedure that 
+was used for simple linear regression, lm(). The general syntax for the 
+procedure is similar to the previous lab - we are simply adding more terms to 
+the right side of the model. The syntax for specifying are dependent and 
+independent variables is similar except for specifying “interaction” terms 
+and “categorical” variables.  These differences will be discussed in the 
+subsequent sections.
+
+**Background and The Problem**
+In demonstrating multiple linear regression we will use a modified dataset 
+(from Neter, Kutner, Nachtsheim, and Wasserman) from an ecological study on 
+length of stay in a hospital and its relationship to other hospital-specific 
+variables. For example, length of a hospital stay might vary by region of the 
+country, by the average age of patients in hospitals (older patients generally 
+are sicker and stay longer), by whether a hospital is associated with a 
+medical school (seems that more resources are available to those with a school),
+and by how likely a patient is to acquire a nosocomial infection 
+(infection acquired while in the hospital). We might also think that geographic 
+region impacts the association between length of stay and medical school
+affiliation. We’ll show how to test this assumption or conjecture of an 
+interaction (also called “effect modification”) in the context of regression
+modeling. 
+
+Consider the following characteristics that we know about a sample of hospitals 
+in various regions of the country and put into an electronic dataset for 
+evaluation: 
+
+* LOS - the average length of stay for patients admitted to a given hospital
+* AGE - the average age of patients admitted to a given hospital
+* INFRISK - the average estimated probability of acquiring an infection in a given hospital
+* MEDSCHL - indicator of whether hospital is affiliated with a medical school or not
+* REGION - an indicator representing the region of the country in which the 
+hospital resides, where (1=NE, 2=NC, 3=S, 4=W). 
+
+We’ll use this dataset to determine the important factors, which influence the
+average length of stays among hospitals with these various characteristics.
+
+**Dummy Variables**
+A set of “dummy variables” (with one set per categorical variable in the 
+dataset) is an *alternative representation* of a single categorical variable. 
+The collection consists of one less dummy variable than the total levels or 
+choices identified in the categorical response variable. Indicator or binary 
+response variables are each coded with only 1 or 0, depending on whether or
+not a discrete level is observed. For example, consider the trivial, discrete 
+variable gender, which can take on one of two categories, male or female. We can
+represent this categorical response with a single binary indicator variable, say
+“sex_male”, which is set to 1 wherever the current subject is male, or set to 0
+whenever the current individual is female. 
+
+**Note:** we need only 1 (2-1=1) dummy variable for a categorical variable with
+2 levels.  
+
+For categorical variables with more than two categories, say **c** categories or
+choices, **c-1** dummy variables are needed to capture the information provided 
+in the single, **c** level, discrete (or categorical) variable. (While it seems 
+inefficient to introduce **c-1** indicator variables for a single c-level 
+discrete variable, this manipulation allows the software to acquire **c-1** 
+estimates, which represent the **c-1** differences. Each of these are from a 
+pre-selected common category (reference category) rather than one summary 
+estimate representing the average change over all c categories, simultaneously. 
+In practice, one of the **c** categories is set aside or chosen to be the 
+reference group.  Whenever an individual or study subject is in this reference
+group, then all the **c-1** dummy variables are set to 0.  Whenever a subject or
+individual falls into a non-reference category, a pre-selected dummy variable 
+(any one chosen to represent this category) is set to the value one and the 
+remaining dummy variables are set to zero.  
+
+**Critical Note:** While the R function, lm() will build all the dummy variables
+for each categorical variable in the model, the syntax of lm() requires us to 
+redefine all categorical variables. That is, we must redefine each of the 
+categorical variables declared in the model to be a “factor” variable and then 
+lm() can generate the correct set of dummy variables for each categorical 
+variable in the model.
+
+R provides a simple way to create a “factor” variable from a categorical 
+variable. The function factor()  creates a new variable or replaces an existing
+variable in a dataset with a define “factor” array.  For example, the variable 
+REGION in the dataset above has four categories: 1=northeast, 2=northcentral,
+3=south, and 4=west.  To convert this variable to a factor variable with the 
+same name, we would use the following code:
+**note:** you can't run these code sections yet, as we have not loaded a dataset.
+They are just examples.
+
+```
+apc1$region <- factor(apc1$region,
+levels = c(1,2,3,4), 
+labels = c("northeast", "northcentral", "south", "west"))
+```
+
+or to add a new variable to the dataset use:
+
+```
+apc1$newregion <- factor(apc1$region, 
+levels = c(1,2,3,4), 
+labels = c("northeast", "northcentral", "south", "west"))
+```
+
+```
+apc1$newregion <- factor(apc1$region, levels = c(2,1,3,4), labels = c("_ref", "_NE", "_S", "_W"))
+```
+
+or:
+
+```
+apc1$newregion <- relevel(apc1$newregion, ref = "northcentral")
+```
+
+**Coding Interactions (or Effect Modification)**
+An interaction term in the model measures, for each level of an observed 
+variable, the quantitative impact that the various levels of this variable 
+(regressor, covariate, parameter or nuisance variable) has on the relationship 
+of another variable of greater interest (also known as the hypothesized or
+primary effect of interest) with the outcome variable of interest. For 
+convenience, we say we introduced  “main effects” into a model by just including
+the names of the variables in the lm() function. Likewise, we say we have a 
+“one-way interaction” when we include the crossed-term (specified as var1*var2)
+of the two variables into the lm() function. In general, we can specify higher
+levels of interaction involving additional main effects, by including all the
+main effects and all lower level interaction terms. In a simple case, including 
+an interaction term with both the main effects is, for example, coded as:
+
+```
+lm(outcome ~ var1 + var2 + var1*var2) 
+```
+
+In epidemiology, the quantitative estimates calculated for the term var1*var2 in
+the multiple regression model is called ‘effect modification’. Consequently, the
+interaction is an adjustment to the estimated impact of the main effects when
+the two covariates do not independently impact the change in the mean outcome 
+value.  
+
+**Example Multiple Regression analysis with Coding and Output - Reading in and
+Preparing the Dataset:**
+
+```{r}
+##  Here we are reading in the apc1 dataset.
+apc1 <- read.table("/Users/harry/Documents/BIOS6605/Summer_2018/data/APC1.DAT")
+
+## Verify that the dataset read in correctly by printing the first 6 rows.
+head(apc1)
+
+## Provide column headings for the 6 columns that we are interested in looking.
+names(apc1)[1] <- "id"
+names(apc1)[2] <- "los"
+names(apc1)[3] <- "age"
+names(apc1)[4] <- "infrisk"
+names(apc1)[8] <- "medschl"
+names(apc1)[9] <- "region"
+
+## Verify that the column headings were named correctly.
+head(apc1)
+
+## Delete the columns from the dataset that are not needed for the analysis. 
+apc1$V5 = apc1$V6 = apc1$V7 = apc1$V10 = apc1$V11 = apc1$V12 = NULL
+
+## Create dummy codes for the medschl and region variables.
+apc1$mdschl <- factor(apc1$medschl,
+                      levels = c(1,2), 
+                      labels = c("y", "n"))
+apc1$newregion <- factor(apc1$region, levels = c(1,2,3,4), 
+                         labels = c("northeast", "northcentral", 
+                                    "south", "west"))
+
+## Print the first 6 rows of the dataset to make sure that the dummy 
+#  coding worked properly.
+head(apc1)
+```
+
+Our first step will be to look at scatterplots of the dependent variable, 
+length of stay, with respect to the independent variables.
+
+**Plots of Length of Stay vs. Age, Infection Risk, Medical School Affiliation, and Region**
+
+```{r}
+## save default plotting paramters
+
+## generate plots
+par(mfrow=c(2,2))
+plot(apc1$age, apc1$los, ylab="LOS", xlab="Age", 
+     main= "LOS and Age")
+plot(apc1$infrisk, apc1$los, ylab="LOS", xlab="Infection Risk",
+     main= "LOS and Infection Risk")
+plot(apc1$medschl, apc1$los, ylab="LOS", xlab="Medical School Affiliation", 
+     main= "LOS and Medical School Affiliation")
+plot(apc1$newregion, apc1$los, ylab="LOS", xlab="Region", 
+     main= "LOS and Region")
+```
+
+**Note:** The graph of LOS and Region, in the panel above, is different from LOS
+and Medical School Affiliation since we earlier defined region to be a factor 
+variable and the “plot” function defaults to a bar chart, rather than a scatter 
+plot for factor variables. To demonstrate, plot the factor variable 
+“apc1$mdschl”, instead.
+
+**Note:** To put graphs in a panel presentation as above, you can save the plots in
+R to a folder/file and then use the MS/Word Insert  / (Table, Pictures) and then
+modify the size of the plots to fit your presentation.
+
+What relationships do you observe in each plot? Does there appear to be a linear
+relationship between length of hospital stay and age? and infection risk? Does 
+the mean length of stay appear to differ between hospitals that affiliated with
+a medical school and ones that are not? among regions? Which variables do you
+think will result in non-zero regression estimates (los vs. age, infection risk)
+or non-zero mean differences (los across levels of medical school affiliation, 
+region)?
+
+Does the distribution of length of stay appear to follow a Normal distribution 
+for specific values of age? for infection risk? for the categories of medical 
+school affiliation? for geographic region? … 
+
+```{r}
+hist(apc1$los, xlab="LOS", main= "LOS Distribution")
+```
+
+Given the slight right skewness we see in the length of stay variable, it might
+be better to transform it by taking the natural log and then proceed with the 
+analysis. We would do this using:
+
+```{r}
+apc1$loglos <- log(apc1$los)
+```
+
+As a descriptive tool, let’s compute the correlations between “apc1$loglos” 
+(the natural log of length of stay) and age and infection risk.  Correlation 
+isn’t appropriate for looking at mean differences across affiliation categories
+or across regions. We’ll use the describeBy() function from the psych package 
+to get descriptive statistics for those two variables.
+
+```{r}
+cor(apc1$age, apc1$loglos)
+cor(apc1$infrisk, apc1$loglos)
+```
+
+We see that correlations with log(length of stay) are at best moderate. The 
+correlation between age and infection risk is quite low. In this way we get a
+feel for which variables might be significant in the regression analysis and 
+which might be confounders of the other variables.
+
+Now let’s take a look at “loglos” for the categorical independent variables …
+
+```{r}
+library(psych)
+
+describeBy(apc1$loglos, apc1$medschl)
+
+describeBy(apc1$loglos, apc1$region)
+```
+
+Are there differences in length of stay associated with affiliation and region?
+Let’s say, now, that we think the effect of medical school affiliation on 
+average length of stay might vary across the regions. How could we visually
+inspect that hypothesis before proceeding with the regression analysis?
+
+```{r}
+plot(apc1$region, apc1$los,
+     ylab="LOS", xlab="Region", 
+     main= "LOS, Region, and Medical School Affiliation",
+     pch=19,cex=0.5, col=(apc1$medschl))
+
+legend("topright", legend = c("No", "Yes"), 
+       pch=c(19, 19), col = c("red", "black"), 
+       title="Medical School Affiliation")
+```
+
+Do you think that medical school affiliation modifies the effect of geographical
+region on log(length of stay) (or vice versa)? Why or why not?
+
+Let’s see now how we can fit a model that includes the interaction of interest: 
+medical school affiliation and region. We’ll need to fit a model that includes 
+all of the building blocks – we call these main effects – in addition to the 
+interaction terms.
+
+We’ll start with all of the variables and the hypothesized interaction in the
+model. We need to assess the fit of this model before proceeding to hypothesis 
+testing about the parameters (slope coefficients).
+
+**Fitting a Model with Main Effects and Interactions**
+
+```{r}
+## Recode medschl
+apc1$medschl[apc1$medschl == 1] = 1
+apc1$medschl[apc1$medschl == 2] = 0
+## format as factor 
+apc1$medschl <- factor(apc1$medschl,
+                       levels = c(0,1),
+                       labels = c("No", "Yes"))
+## recode region
+apc1$region[apc1$region == 4] = 0
+apc1$region[apc1$region == 3] = 3
+apc1$region[apc1$region == 2] = 2
+apc1$region[apc1$region == 1] = 1
+## format as factor
+apc1$region <- factor(apc1$region,
+                      levels = c(0,1,2,3), 
+                      labels = c("W", "NE", "NC", "S")) 
+## fit multiple linear regression model, which includes interaction between medschool and region
+model1 <- lm(loglos ~ age + infrisk + medschl + region + medschl*region, 
+             data=apc1)
+## get model summary and estimate confidence intervals
+summary(model1)
+confint(model1)
+```
+
+Let’s look first at the residuals from this model: the deviations of the
+observations from their predicted values. These will tell us something about 
+how valid the assumption is of normality of the log(length of stay) variable 
+given the independent variables. The raw residuals tend to have patterns in them
+that are misleading. We use Studentized (or standardized) residuals instead – 
+the raw residuals divided by their standard deviation. Recall that the residual 
+variance is denoted as $\sigma^2_{y\mid x}$. The standard deviation of the 
+residuals is then the square root of $\sigma^2_{y\mid x}$.
+
+In R, we can get the QQplot for studentized residuals by using the qqPlot() 
+function from the car package. To get the distribution of studentized residuals 
+histogram we use the studres() function in the MASS package.
+
+```{r}
+par(mfrow=c(1,2))
+#install.packages(“car”)
+library(car)
+qqPlot(model1, main="QQ Plot")
+
+#install.packages(“MASS”)
+library(MASS)
+sresid <- studres(model1) 
+hist(sresid, freq=FALSE, main="Distribution of Studentized Residuals")
+xfit<-seq(min(sresid),max(sresid),length=40) 
+yfit<-dnorm(xfit) 
+lines(xfit, yfit)
+```
+
+The mean of these Studentized residuals is 0 (as expected, no matter what the
+model), and the standard deviation is 1. From the Normal probability plot it 
+does appear that the residuals are approximately normally distributed. The right
+skewness we see comes from a few extreme length of stay values that persist even
+after the log transformation.
+
+We can also look at other plots of the residuals vs. predicted values and the
+independent variables.  If the assumption of homoscedasticity holds, the 
+residuals should have no relation to the independent variables (or to the
+prediction). In R, we can get this information by using the plot() function.
+
+```{r}
+layout(matrix(c(1,2,3,4), 2,2))
+
+plot(model1)
+```
+
+**Since there are no discernible patterns of the residuals in these plots we can proceed to looking for influential observations.**
+
+Influential Points: Cook’s Distance (Cook’s D) and Leverage
+Cook’s D is a measure of how much influence an observation has on the estimation
+of the regression coefficients. Values of Cook’s D larger than 1 should be
+investigated as influential points. Below you’ll see the 10 largest Cook’s D 
+values. No values of Cook’s D are larger than 1, so we don’t think any 
+observations are influential based on this metric. If there were influential 
+points we would want to investigate those observations further to make sure 
+they represent accurately recorded values. If they are accurate we might 
+consider leaving them out of the regression model analysis to see how much the
+coefficients change. If the results appear very different we would want to 
+summarize and report both sets of results.
+
+Leverage values are also helpful in identifying potentially influential 
+observations. Leverage values that are larger than 2 or 3 times (the number of
+parameters in the regression model) might be influential points. For these data,
+we have 6 parameters in the model (one intercept and 5 slopes), so using 3 as 
+the multiplier the largest leverage value we’d expect is 0.159. Below you’ll see
+both the Cook’s D and Influence plots. Additionally, you will see the values for
+the observations that the Cook’s D plot identified and the 20 highest leverage
+values.
+
+```{r}
+#install.packages(“car”)
+library(car)
+
+cutoff <- 4/((nrow(apc1)-length(model1$coefficients)-2)) 
+plot(model1, which=4, cook.levels=cutoff)
+
+influencePlot(model1,  id.method="identify", main="Influence Plot", sub="Circle size is proportial to Cook's Distance" )
+
+CooksD <- cooks.distance(model1)
+Residuals <- stdres(model1)
+infl <- cbind(apc1$id, CooksD,Residuals)
+infl[CooksD > 4/51, ]
+
+leverage <- hatvalues(model1)
+lev <- data.frame(apc1$id, leverage)
+lev <- lev[order(-lev$leverage),] 
+head(lev, n=20)
+```
+
+Now that we’ve looked at the residuals and the influence statistics we see that
+the model fits reasonably well and meets the assumptions of regression). We can
+now proceed to testing hypotheses about the regression coefficients.
+
+```{r}
+summary(lm(formula = loglos ~ age + infrisk + medschl + region + medschl * 
+    region, data = apc1))
+```
+
+Before we interpret anything in this model, we want to run a partial F test to
+determine if the inclusion of the interaction terms significantly improves the 
+fit of our model. Here we will refer to the model with the interaction term as
+the full model and the model without the interaction terms as the reduced model.
+
+```{r}
+## FULL MODEL
+model1 <- lm(loglos ~ age + infrisk + medschl + region +medschl*region, data=apc1)
+
+## REDUCED MODEL
+model2 <- lm(loglos ~ age + infrisk + medschl + region, data=apc1)
+
+## PARTIAL F-TEST
+anova(model2, model1)
+```
+
+The results from the partial F-test confirm that including the interaction terms
+is not necessary ($F(3, 103) = 1.50, p = 0.49$). Thus we can now run and interpret
+the findings from the reduced model.
+
+```{r}
+summary(lm(formula = loglos ~ age + infrisk + medschl + region, data = apc1))
+```
+
+**Interpreting the Results from the Reduced Model**
+
+For our purposes we’ll focus on the overall F-test first. This can be found by 
+looking at the F-statistic in the output. For our model, we would write this 
+like ($F(6, 106) = 23.07, p < 0.001$) and using the value for the adjusted $R^2$,
+we can say that our model explained 54.18% of the variance ($R^2 = 0.5418$).
+
+The next thing to notice is the parameter section. As with the previous simple 
+linear regression the parameters form an equation.  Taking only the continuous 
+variables into account we get the following:
+
+$Log(LOS) = 1.42 + .007*Age + .059*infrisk$
+
+So we can see that length of stay increases slightly with age and with an 
+increased risk of infection.  But that’s not the whole picture; we also have 
+the categorical predictors.  Adding them in we get the full equation:
+
+$Log(LOS) = 1.42 + .007*Age + .059*infrisk + .104*(Medschl-Yes) + .255(Region-NE) + .177(Region-NC) + .153(Region-S)$
+
+So the average log(length of stay) for patients going to a medical 
+school-affiliated hospital (Medschol-Yes = True) increases by 0.104 log-days. 
+If that region was in the northeast, you would add a further 0.255 log-days. 
+Note that the 0.255 doesn’t mean 0.255 extra days. Remember we’re dealing with 
+the log-length of stay here so the effects are actually multiplicative rather 
+than additive, so the increase would be exp(0.255) or 1.29 times more days for
+hospitals in the northeast region compared to those in the west .
+
+But what about the western region? What about non-medical school hospitals? We 
+chose these values as the reference frames. So the actual interpretation of the
+other coefficients is relative. In other words, medical schools have a greater 
+length of stay than non-medical school hospitals. People in the northeast
+region stay longer than those in the west. It’s not that people in the west 
+don’t have a length of stay, the value is just part of the intercept, and all
+other values are relative to that reference frame.  
+
+Basically, multiple regression is similar to simple regression, just with more
+coefficients.  The crucial difference to remember is that the questions “Is the
+slope for this variable zero?” and “Is this model significant?” are no longer 
+the same question; we now have several slopes to measure. As we can see from the
+first model, the model can still be significant even if some of the terms 
+aren’t. Also remember that adding a variable will always increase the predictive
+power of your model, but that doesn’t necessarily make the model better.
+
+
